@@ -65,15 +65,24 @@
   LAYERS.forEach(function (L) { L.el = $('[data-layer="' + L.key + '"]'); L.ratio = L.h / L.w; });
 
   function measure() {
-    vw = window.innerWidth;
-    vh = window.innerHeight;
+    var nvw = window.innerWidth, nvh = window.innerHeight;
+    /* в мобильных браузерах адресная строка меняет высоту на лету, не дёргаем кадр */
+    if (vh && nvw === vw && nvw < 860 && Math.abs(nvh - vh) < 130) nvh = vh;
+    vw = nvw; vh = nvh;
     mobile = vw < 860;
     /* ширина кепки на экране: от крупного плана до фигуры в полный рост */
     if (mobile) {
       CAM.hw0 = vw * 0.98;
       CAM.x0 = CAM.x1 = 0.50 * vw;
-      CAM.y0 = 0.58 * vh; CAM.y1 = 0.30 * vh;
+      /* пузыри и лицо встают под текстом, высоту меряем, а не угадываем */
+      var heroEl = $(".hero");
+      var ih = ideas ? (ideas.offsetHeight || 46) : 0;
+      var hb = heroEl ? heroEl.offsetTop + heroEl.offsetHeight : 0.42 * vh;
+      CAM.iy0 = hb + 16;
+      CAM.y0 = clamp(CAM.iy0 + ih + 14, 0.40 * vh, vh - 140);
+      CAM.y1 = 0.30 * vh;
     } else {
+      CAM.iy0 = null;
       /* фото встаёт правее текстовой колонки, поэтому считаем от неё */
       var lft  = Math.min(92, Math.max(16, 0.06 * vw));
       var colW = Math.min(560, 0.46 * vw);
@@ -122,7 +131,8 @@
       var io = 1 - range(p, 0.03, 0.15);
       ideas.style.opacity = io.toFixed(3);
       ideas.style.setProperty("--ix", ax.toFixed(1) + "px");
-      ideas.style.setProperty("--iy", (ay - (mobile ? 18 : 26) - (1 - io) * 80).toFixed(1) + "px");
+      var iyBase = (mobile && CAM.iy0 != null) ? CAM.iy0 + (ay - CAM.y0) : ay - 26;
+      ideas.style.setProperty("--iy", (iyBase - (1 - io) * 80).toFixed(1) + "px");
       ideas.style.pointerEvents = io < .25 ? "none" : "auto";
     }
 
@@ -197,6 +207,11 @@
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", function () { measure(); draw(progress()); });
     window.addEventListener("pointermove", pointer, { passive: true });
+    /* шрифт меняет высоту текста, пересчитываем когда он подгрузился */
+    window.addEventListener("load", function () { measure(); draw(progress()); });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { measure(); draw(progress()); });
+    }
     requestAnimationFrame(loop);
     if (!intro) startEntrance();
     setTimeout(function () { if (!entOn && ent > 0) startEntrance(); }, 4000);  /* страховка */
