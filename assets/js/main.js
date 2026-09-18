@@ -64,7 +64,9 @@
   }
 
   function draw(p) {
-    var e  = ease(p);
+    /* камера доезжает до полного роста к 72% прокрутки и держит кадр до конца */
+    var c  = clamp(p / 0.72, 0, 1);
+    var e  = c * c * (3 - 2 * c);
     var hw = CAM.hw0 * Math.pow(CAM.hw1 / CAM.hw0, e);   /* плавный отъезд камеры */
     var ax = lerp(CAM.x0, CAM.x1, e) + tx;
     var ay = lerp(CAM.y0, CAM.y1, e) + ty;
@@ -96,8 +98,8 @@
     scenes.forEach(function (el) {
       var i = +el.getAttribute("data-scene"), o, sh;
       if (i === 0) { o = 1 - range(p, 0.03, 0.14); sh = -30 * (1 - o); }
-      else if (i === 1) { o = range(p, 0.24, 0.34) * (1 - range(p, 0.44, 0.52)); sh = 26 * (1 - range(p, 0.24, 0.34)); }
-      else { o = range(p, 0.62, 0.72) * (1 - range(p, 0.90, 0.97)); sh = 26 * (1 - range(p, 0.62, 0.72)); }
+      else if (i === 1) { o = range(p, 0.24, 0.33) * (1 - range(p, 0.40, 0.47)); sh = 26 * (1 - range(p, 0.24, 0.33)); }
+      else { o = range(p, 0.53, 0.62) * (1 - range(p, 0.92, 0.98)); sh = 26 * (1 - range(p, 0.53, 0.62)); }
       el.style.opacity = o.toFixed(3);
       el.style.transform = "translate3d(0," + sh.toFixed(1) + "px,0)";
       el.style.pointerEvents = o < .3 ? "none" : "auto";
@@ -146,6 +148,7 @@
     window.addEventListener("pointermove", pointer, { passive: true });
     requestAnimationFrame(loop);
   } else if (stage) {
+    var ph = $("#photo"); if (ph) ph.style.cssText = "position:static;text-align:center";
     LAYERS[1].el && (LAYERS[1].el.style.cssText = "position:static;opacity:1;width:min(420px,70vw);margin:0 auto");
     LAYERS[0].el && LAYERS[0].el.remove();
     LAYERS[2].el && LAYERS[2].el.remove();
