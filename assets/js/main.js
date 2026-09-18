@@ -12,12 +12,12 @@
   var lerp  = function (a, b, t) { return a + (b - a) * t; };
 
   /* ---------- 1. Интро ---------- */
-  var T0 = Date.now(), MIN_INTRO = 1250;
+  var T0 = Date.now(), MIN_INTRO = 2350;
   var intro = $("#intro");
-  function killIntro() {
+  function killIntro(force) {
     if (!intro) return;
     var wait = MIN_INTRO - (Date.now() - T0);
-    if (wait > 0) { setTimeout(killIntro, wait); return; }   /* даём анимации доиграть */
+    if (wait > 0 && force !== true) { setTimeout(killIntro, wait); return; }   /* даём сборке доиграть */
     intro.classList.add("is-out");
     document.body.classList.remove("is-locked");
     startEntrance();
@@ -43,7 +43,10 @@
       window.addEventListener("load", function () {
         photosReady(function () { setTimeout(killIntro, 150); });
       });
-      setTimeout(killIntro, 2600);
+      setTimeout(killIntro, 3600);
+      /* пропустить: клик по сцене или кнопка */
+      intro.addEventListener("click", function () { killIntro(true); });
+      var sk = $("#introSkip"); sk && sk.addEventListener("click", function (e) { e.stopPropagation(); killIntro(true); });
     }
   }
 
