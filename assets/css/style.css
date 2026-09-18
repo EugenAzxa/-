@@ -281,11 +281,11 @@ p{margin:0}
 }
 .phone:hover{color:var(--accent)}
 .contact__btns{display:flex;gap:12px;flex-wrap:wrap}
-.contact__small{margin-top:22px;font:500 13px/1.5 "JetBrains Mono",monospace;color:rgba(247,242,236,.45)}
+.contact__small{margin-top:22px;font:500 13px/1.5 "JetBrains Mono",monospace;color:rgba(247,242,236,.6)}
 .contact__man{max-height:520px;width:auto;justify-self:end;filter:drop-shadow(0 30px 60px rgba(0,0,0,.6))}
 
 /* ---------- подвал ---------- */
-.foot{background:var(--ink);color:rgba(247,242,236,.55);padding:26px 0 40px;border-top:1px solid rgba(247,242,236,.12)}
+.foot{background:var(--ink);color:rgba(247,242,236,.62);padding:26px 0 40px;border-top:1px solid rgba(247,242,236,.12)}
 .foot__in{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;font-size:14px}
 .foot__mark{font-weight:800;color:var(--paper);letter-spacing:-.02em}
 .foot__tel{font:500 14px/1 "JetBrains Mono",monospace;color:var(--paper)}
@@ -321,7 +321,9 @@ p{margin:0}
   .hero{left:5vw;right:5vw;width:auto;top:84px;text-align:center}
   .hero .lead{font-size:15px;margin:14px auto 0;max-width:none}
   .hero__cta{margin-top:20px;justify-content:center}
-  .scene{left:5vw;right:5vw;width:auto;top:auto;bottom:24vh;text-align:center}
+  .scene{left:5vw;right:5vw;width:auto;top:84px;bottom:auto;text-align:center}
+  .scene:before{content:"";position:absolute;inset:-30px -6vw;z-index:-1;
+    background:radial-gradient(62% 64% at 50% 42%,var(--paper) 58%,rgba(247,242,236,0))}
   .stage{height:300vh}
   .hero h1{font-size:clamp(27px,7.2vw,42px)}
   .callbar{display:flex}

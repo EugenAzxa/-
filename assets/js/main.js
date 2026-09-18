@@ -9,7 +9,6 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
   var range = function (v, a, b) { return clamp((v - a) / (b - a), 0, 1); };
-  var ease  = function (t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
   var lerp  = function (a, b, t) { return a + (b - a) * t; };
 
   /* ---------- 1. Интро ---------- */
@@ -37,7 +36,7 @@
     { key:"full",  w:710, h:1500, hw:0.115, hy:0.000, hx:0.512 }
   ];
 
-  var stage = $("#hero"), sticky = stage && $(".stage__sticky", stage);
+  var stage = $("#hero");
   var ideas = $("#ideas"), cue = $("#cue"), nav = $("#nav"), callbar = $(".callbar");
   var scenes = $$("[data-scene]");
   var vw = 0, vh = 0, mobile = false, px = 0, py = 0, tx = 0, ty = 0;
@@ -50,12 +49,22 @@
     vh = window.innerHeight;
     mobile = vw < 860;
     /* ширина кепки на экране: от крупного плана до фигуры в полный рост */
-    CAM.hw0 = mobile ? vw * 0.98 : Math.min(vw * 0.38, 620);
+    if (mobile) {
+      CAM.hw0 = vw * 0.98;
+      CAM.x0 = CAM.x1 = 0.50 * vw;
+      CAM.y0 = 0.58 * vh; CAM.y1 = 0.30 * vh;
+    } else {
+      /* фото встаёт правее текстовой колонки, поэтому считаем от неё */
+      var lft  = Math.min(92, Math.max(16, 0.06 * vw));
+      var colW = Math.min(560, 0.46 * vw);
+      var left = lft + colW + 28;
+      var iw   = Math.min((vw - left) * 1.12, vh * 0.75);
+      CAM.hw0 = LAYERS[0].hw * iw;
+      CAM.x0  = left + LAYERS[0].hx * iw;
+      CAM.x1  = Math.min(CAM.x0, vw * 0.70);
+      CAM.y0  = 0.60 * vh; CAM.y1 = 0.16 * vh;
+    }
     CAM.hw1 = LAYERS[2].hw * (LAYERS[2].w * (vh * (mobile ? 0.62 : 0.74)) / LAYERS[2].h);
-    CAM.y0  = (mobile ? 0.58 : 0.60) * vh;
-    CAM.y1  = (mobile ? 0.24 : 0.16) * vh;
-    CAM.x0  = (mobile ? 0.50 : 0.68) * vw;
-    CAM.x1  = (mobile ? 0.50 : 0.66) * vw;
     LAYERS.forEach(function (L) {
       if (!L.el) return;
       L.el.style.width = L.w + "px";
@@ -91,7 +100,7 @@
       var io = 1 - range(p, 0.03, 0.15);
       ideas.style.opacity = io.toFixed(3);
       ideas.style.setProperty("--ix", ax.toFixed(1) + "px");
-      ideas.style.setProperty("--iy", (ay - (mobile ? 16 : 26) - (1 - io) * 80).toFixed(1) + "px");
+      ideas.style.setProperty("--iy", (ay - (mobile ? 18 : 26) - (1 - io) * 80).toFixed(1) + "px");
       ideas.style.pointerEvents = io < .25 ? "none" : "auto";
     }
 
@@ -119,7 +128,7 @@
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(function () {
-      draw(progress());
+      if (!reduced) draw(progress());
       if (nav) nav.classList.toggle("is-stuck", window.scrollY > 40);
       if (callbar) callbar.classList.toggle("is-on", window.scrollY > vh * 0.9);
       ticking = false;
@@ -141,8 +150,10 @@
 
   if (location.search.indexOf("dev=1") >= 0) window.__draw = draw;   /* отладка кадров */
 
+  if (stage) measure();
+
   if (stage && !reduced) {
-    measure(); draw(0);
+    draw(0);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", function () { measure(); draw(progress()); });
     window.addEventListener("pointermove", pointer, { passive: true });
@@ -150,8 +161,9 @@
   } else if (stage) {
     var ph = $("#photo"); if (ph) ph.style.cssText = "position:static;text-align:center";
     LAYERS[1].el && (LAYERS[1].el.style.cssText = "position:static;opacity:1;width:min(420px,70vw);margin:0 auto");
-    LAYERS[0].el && LAYERS[0].el.remove();
-    LAYERS[2].el && LAYERS[2].el.remove();
+    LAYERS[0].el && LAYERS[0].el.remove(); LAYERS[0].el = null;
+    LAYERS[2].el && LAYERS[2].el.remove(); LAYERS[2].el = null;
+    LAYERS[1].el = null;
     scenes.forEach(function (el) { el.style.cssText = "position:static;opacity:1;margin:40px auto 0;transform:none"; });
     ideas && (ideas.style.cssText = "position:static;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:auto;height:auto;margin:30px 0");
     $$(".idea").forEach(function (el) { el.style.cssText = "position:static;animation:none"; });
@@ -234,7 +246,7 @@
     renderDemo(0);
     var auto = 0;
     setInterval(function () {
-      if (auto < 0 || document.hidden) return;
+      if (auto < 0 || reduced || document.hidden) return;
       var wrap = $("#primery").getBoundingClientRect();
       if (wrap.top > vh || wrap.bottom < 0) return;
       auto = (auto + 1) % DEMOS.length;
