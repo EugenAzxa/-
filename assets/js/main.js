@@ -204,6 +204,7 @@
   }
 
   if (stage) measure();
+  else { vw = window.innerWidth; vh = window.innerHeight; }
 
   if (stage && !reduced) {
     draw(0);
@@ -218,6 +219,10 @@
     requestAnimationFrame(loop);
     if (!intro) startEntrance();
     setTimeout(function () { if (!entOn && ent > 0) startEntrance(); }, 4000);  /* страховка */
+  } else if (!stage) {
+    /* внутренние страницы: только шапка и кнопка звонка */
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", function () { vw = window.innerWidth; vh = window.innerHeight; });
   } else if (stage) {
     ent = 0;
     stage.classList.add("is-live");
@@ -423,6 +428,132 @@
       renderDemo(auto);
     }, 5200);
   }
+
+  /* ---------- 4a. Фильм по прокрутке: камера через нос в голову, сайты выходят из уха ---------- */
+  /* 301 кадр (20 секунд, 15 кадров в секунду). Цвет края каждого кадра, чтобы фон секции совпадал с роликом */
+  var FILM_N = 301;
+  var FILM_COLS = "bab0a1bcb1a2bcb1a2bbb1a2bbb1a2bab0a1b9afa0b8aea0b7ad9fb6ac9eb5ac9db5ab9db5ab9db5ab9cb5aa9cb5aa9cb5aa9bb5aa9bb5aa9bb7ab9cb8ad9dbbae9ebbaf9ebcaf9fbfb1a0c0b2a1c3b4a2c3b4a2c3b2a0c1af9dc0ae9bbca896b7a391af9b88b29b88b49c88b89e89ba9f8ab89b86ab8d78a4816c94685294665091614c8b5e4a895d4a8158467f57457e5644805745825a46865c48875c498b604b8c634f8c63516e4d3f57372b45251a46221a4e251e52272051261f5a2a206531266c36297a40327f4335854739894a3c8b4b3c8e4d3e8f4d3e924f3e94503f94503f9853419a54429c55429d56439e5643a05744a05744a15845a25845a35946a55a46a55a47a85c48ab5e4aae604bb7664fbb6a52c8755bd48263d88666d58564cf8062c0785b9b5d4c875146593439462632361e3627143d261341251344231143210f402411442210422c174f321a562714492513411a0d33150a2b150a2a190d2e1c0e311d0f3220113621123722133924143b25143b26153c26153c26153d27163e28163e28163f28163f28173f2917412a17412b18422b18422b18422c19432d19442e1a452e1a452f1b46301c47311c48321d48331e49341e4a351f4b36204b39224d39224d3a234d3b244f3b244f3d25503f26514329523f2752402753422854432955442a56462c58472c58482d5a4a2e5b4d315e5033615033614f31604f315f4d305a492d4f4a2e4e5335515738525a3c535a3c535f4155664958714f597f595a875853794b4855333c482a392c172c22132a1c1029231d2d2d2733443e425c5557686060837b77908782a69c95b6aba3bab0a6beb4aabfb4abc0b6acc1b7adc1b7adc2b7adc1b8aec2b9aec2b9aec3b9aec3b9afc3b9afc3baafc4baafc4baafc3baafc3baafc3baafc3baafc3baaec2b9aec2b9aec2b9aec2b9aec2b9aec2b9aec2b9afc3bab0c5bbb2c6bbb3c6bcb2c6bcb2c7bcb3c6bab2c6bbb2c6bab1c6bbb1c6bab0c3b8afc2b7aec1b5adc0b4acbeb2aabdb2a9beb2a9c1b5abc2b6acc3b7acc5baaec6baaec4b8acc3b8acc3b8acc5b9adc5baadc9bdb0cabeb1cbbeb1c8bbafc7baaec7baafc7baafcabdb0ccbfb0cbbfb0c9bdaec8bcadc8bcadc8bcacc8bcacc8bbacc7bbabc7bbabc7bbabc7bbabc8bcacc9bcacccbfafd3c6b4d6c9b8dbcdbbdccebcddcfbdded0bedfd1bfe1d2c0e3d3c1e5d5c3e7d7c4e7d7c4e7d7c4e7d7c4e7d7c4e7d6c4e6d6c3e6d6c3e6d5c3e5d5c2e5d5c2e5d5c2";
+  var film = $("#ideya");
+  if (film) (function () {
+    var cv = $("#filmCanvas"), ctx = cv && cv.getContext("2d");
+    var bar = $("#filmBar"), caps = $$(".film__cap", film);
+    if (reduced || !ctx) { film.classList.add("film--static"); return; }
+
+    var small = window.innerWidth < 700;
+    var dir = "assets/film/" + (small ? "m" : "d") + "/";
+    var frames = new Array(FILM_N), got = 0, started = false;
+    var cur = 0, want = 0, drawn = -1, cw = 0, chh = 0;
+
+    function src(i) { return dir + ("00" + (i + 1)).slice(-3) + ".webp"; }
+    /* сначала каждый 16-й кадр, потом заполняем промежутки: ролик листается сразу, а не после загрузки всего */
+    function order() {
+      var seen = {}, out = [];
+      [16, 8, 4, 2, 1].forEach(function (st) {
+        for (var i = 0; i < FILM_N; i += st) if (!seen[i]) { seen[i] = 1; out.push(i); }
+        if (!seen[FILM_N - 1]) { seen[FILM_N - 1] = 1; out.push(FILM_N - 1); }
+      });
+      return out;
+    }
+    function load() {
+      if (started) return;
+      started = true;
+      var q = order(), live = 0;
+      function next() {
+        while (live < 6 && q.length) {
+          (function (i) {
+            var im = new Image();
+            live++;
+            im.decoding = "async";
+            im.onload = function () {
+              frames[i] = im; got++; live--;
+              if (got === 1 || got % 20 === 0) drawn = -1;
+              if (got > 24) film.classList.add("is-ready");
+              next();
+            };
+            im.onerror = function () { live--; next(); };
+            im.src = src(i);
+          })(q.shift());
+        }
+      }
+      next();
+    }
+
+    function size() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var r = cv.getBoundingClientRect();
+      cw = Math.round(r.width * dpr); chh = Math.round(r.height * dpr);
+      if (cv.width !== cw) cv.width = cw;
+      if (cv.height !== chh) cv.height = chh;
+      drawn = -1;
+    }
+    function near(i, step) {
+      for (var k = i; k >= 0 && k < FILM_N; k += step) if (frames[k]) return k;
+      return -1;
+    }
+    function paint(im, a) {
+      var iw = im.naturalWidth, ih = im.naturalHeight;
+      var s = Math.max(cw / iw, chh / ih), w = iw * s, h = ih * s;   /* как object-fit: cover */
+      ctx.globalAlpha = a;
+      ctx.drawImage(im, (cw - w) / 2, (chh - h) / 2, w, h);
+    }
+    function render() {
+      var i = Math.floor(cur), f = cur - i;
+      var lo = near(i, -1), hi = near(Math.min(i + 1, FILM_N - 1), 1);
+      if (lo < 0) lo = hi;
+      if (lo < 0) return;
+      var key = lo * 1000 + (hi === lo + 1 ? Math.round(f * 20) : 0);
+      if (key === drawn) return;
+      drawn = key;
+      paint(frames[lo], 1);
+      if (hi === lo + 1 && f > 0.02) paint(frames[hi], f);   /* мягкая склейка соседних кадров */
+      ctx.globalAlpha = 1;
+      var c = FILM_COLS.substr(lo * 6, 6);
+      film.style.setProperty("--fbg", "#" + c);
+      var r = parseInt(c.substr(0, 2), 16), g = parseInt(c.substr(2, 2), 16), b = parseInt(c.substr(4, 2), 16);
+      film.classList.toggle("is-dark", (0.299 * r + 0.587 * g + 0.114 * b) < 120);
+    }
+
+    /* подписи: [появилась, исчезает] в долях ролика */
+    var CAPS = [[-1, 0.15], [0.33, 0.56], [0.64, 0.82], [0.9, 2]];
+    function prog() {
+      var r = film.getBoundingClientRect();
+      return clamp(-r.top / (film.offsetHeight - window.innerHeight), 0, 1);
+    }
+    function frameTarget() {
+      var p = prog();
+      var v = clamp(p / 0.94, 0, 1);   /* последний кадр держим до конца секции */
+      want = v * (FILM_N - 1);
+      if (bar) bar.style.transform = "scaleX(" + v.toFixed(4) + ")";
+      caps.forEach(function (el, k) {
+        var a = CAPS[k][0], z = CAPS[k][1];
+        var o = range(v, a, a + 0.05) * (1 - range(v, z - 0.04, z));
+        el.style.opacity = o.toFixed(3);
+        el.style.transform = "translate3d(0," + (26 * (1 - range(v, a, a + 0.05))).toFixed(1) + "px,0)";
+        el.style.pointerEvents = o > 0.5 ? "auto" : "none";
+      });
+    }
+
+    var on = false;
+    function tick() {
+      if (!on) return;
+      cur += (want - cur) * 0.2;
+      if (Math.abs(want - cur) < 0.01) cur = want;
+      render();
+      requestAnimationFrame(tick);
+    }
+    if ("IntersectionObserver" in window) {
+      /* грузим заранее, за полтора экрана до секции */
+      new IntersectionObserver(function (es) { if (es[0].isIntersecting) load(); }, { rootMargin: "150% 0px" }).observe(film);
+      new IntersectionObserver(function (es) {
+        var was = on; on = es[0].isIntersecting;
+        if (on && !was) { size(); frameTarget(); cur = want; requestAnimationFrame(tick); }
+      }).observe(film);
+    } else { load(); on = true; requestAnimationFrame(tick); }
+    window.addEventListener("load", function () { setTimeout(load, 2500); });
+    window.addEventListener("scroll", function () { if (on) frameTarget(); }, { passive: true });
+    window.addEventListener("resize", function () { size(); frameTarget(); });
+    size(); frameTarget();
+  })();
 
   /* ---------- 5. Вопросы ---------- */
   var FAQ = [

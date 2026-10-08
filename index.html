@@ -33,6 +33,8 @@
 .ideas{position:static;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;width:auto;height:auto;margin:26px 0;transform:none}
 .idea{position:static;animation:none;opacity:1}
 .reveal{opacity:1;transform:none}
+.film{height:auto}.film__sticky{position:relative;height:auto}.film__canvas,.film__shade,.film__bar,.film__load{display:none}
+.film__poster{display:block;position:static;width:100%;height:auto}.film__caps{position:static}.film__cap{position:static;opacity:1;transform:none;margin:24px auto;max-width:660px}
 </style></noscript>
 </head>
 <body>
@@ -71,6 +73,7 @@
   <nav class="nav__links" aria-label="Разделы">
     <a href="#tarify">Тарифы</a>
     <a href="#primery">Примеры</a>
+    <a href="seo.html">SEO</a>
     <a href="#process">Как работаем</a>
     <a href="#faq">Вопросы</a>
   </nav>
@@ -236,6 +239,40 @@
         <p>Это не абонентская плата за воздух. В неё входит: присмотр за сайтом и хостингом, резервные копии, обновления и защита, мелкие правки текстов и цен, замена фото, ответ на ваш вопрос в тот же день. Хостинг и домен вы оплачиваете сами напрямую провайдеру, я только слежу за сроками и заранее напоминаю о продлении. Если сайт упал ночью, поднимаю его я, а не вы. Отказаться можно в любой момент, сайт останется вашим.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ФИЛЬМ ПО ПРОКРУТКЕ: из головы в браузер -->
+<section class="film" id="ideya" aria-label="Как рождается сайт">
+  <div class="film__sticky">
+    <canvas class="film__canvas" id="filmCanvas" aria-hidden="true"></canvas>
+    <img class="film__poster" src="assets/film/poster.webp" alt="Александр и шесть сайтов, которые он сделал" loading="lazy" decoding="async">
+    <div class="film__shade" aria-hidden="true"></div>
+    <div class="film__caps">
+      <div class="film__cap" data-cap="0">
+        <p class="eyebrow">Как рождается сайт</p>
+        <h2>Сначала слушаю</h2>
+        <p>Вы рассказываете про свой бизнес, а я ищу, за что зацепится ваш клиент.</p>
+      </div>
+      <div class="film__cap" data-cap="1">
+        <h2>Потом думаю</h2>
+        <p>Структура, тексты, дизайн и код складываются в одной голове. Ничего не теряется по дороге между менеджером, дизайнером и программистом.</p>
+      </div>
+      <div class="film__cap" data-cap="2">
+        <h2>Идеи выходят наружу</h2>
+        <p>Каждый день вы видите по ссылке, как сайт собирается, и можете поправить его на ходу.</p>
+      </div>
+      <div class="film__cap" data-cap="3">
+        <h2>И становятся сайтами</h2>
+        <p>Кофейня, цветы, барбершоп, фитнес, автосервис, мебель в 3D. А потом приходят люди из поиска.</p>
+        <div class="film__btns">
+          <a class="btn" href="#primery">Смотреть примеры</a>
+          <a class="btn btn--ghost" href="seo.html">Трафик из поиска</a>
+        </div>
+      </div>
+    </div>
+    <div class="film__bar" aria-hidden="true"><i id="filmBar"></i></div>
+    <p class="film__load" id="filmLoad" aria-hidden="true">Загружаю ролик</p>
   </div>
 </section>
 
