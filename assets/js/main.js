@@ -582,6 +582,87 @@
     size(); frameTarget();
   })();
 
+  /* ---------- 4b. Расчёт стоимости: 4 шага, результат уходит в WhatsApp или SMS ---------- */
+  var calc = $("#calc");
+  if (calc) (function () {
+    var steps = $$(".calc__step", calc), dots = $$("#calcSteps li"), bar = $("#calcBar");
+    var next = $("#calcNext"), back = $("#calcBack"), res = $("#calcResult"), at = 0;
+    var TYPES = { landing: "Одна страница", multi: "Несколько страниц", shop: "Каталог или магазин", unknown: "Пока не знаю" };
+    var SEO = { none: "Без продвижения", seo: "SEO в Яндексе и Google", ai: "SEO и AI SEO для нейросетей" };
+    var TIERS = [
+      { n: "Лендинг", p: "20 000 - 30 000", t: "5-7 дней", s: "2 000" },
+      { n: "Сайт и веб-приложение", p: "30 000 - 40 000", t: "10-14 дней", s: "3 000" },
+      { n: "Сайт высшего уровня", p: "50 000 - 60 000", t: "14-21 день", s: "4 000" }
+    ];
+    function val(name) { var el = $('input[name="' + name + '"]:checked', calc); return el ? el.value : ""; }
+    function feats() { return $$('input[name="f"]:checked', calc).map(function (el) { return el.value; }); }
+    function text(name) { var el = $('input[name="' + name + '"]', calc); return el ? el.value.trim() : ""; }
+    function ready() { return at === 0 ? !!val("type") : at === 2 ? !!val("seo") : true; }
+    function show(i) {
+      at = i;
+      var done = i >= steps.length;
+      steps.forEach(function (st, k) { st.classList.toggle("is-on", k === i); });
+      dots.forEach(function (d, k) { d.classList.toggle("on", k <= i); });
+      if (bar) bar.style.transform = "scaleX(" + Math.min(1, (i + (done ? 0 : 0.5)) / steps.length) + ")";
+      res.hidden = !done;
+      back.hidden = i === 0;
+      next.hidden = done;
+      next.disabled = !ready();
+      next.textContent = i === steps.length - 1 ? "Показать расчёт" : "Дальше";
+      if (done) result();
+    }
+    function result() {
+      var type = val("type"), f = feats(), seo = val("seo"), niche = text("niche"), city = text("city");
+      var traffic = $('input[name="traffic"]', calc).checked;
+      /* тариф: продвижение или 3D -> третий, функции или несколько страниц -> второй */
+      var tier = 0;
+      if (type === "multi" || type === "shop" || f.some(function (x) { return x !== "3D и анимации"; })) tier = 1;
+      if (seo !== "none" || f.indexOf("3D и анимации") >= 0) tier = 2;
+      var T = TIERS[tier];
+      $("#calcPrice").innerHTML = T.p + " <i>&#8381;</i>";
+      $("#calcTier").innerHTML = "Тариф <a href=\"#t" + (tier + 1) + "\">«" + T.n + "»</a>" +
+        (type === "unknown" ? ". Точнее подскажу на звонке, когда пойму задачу" : "");
+      var facts = ["Срок: " + T.t, "Поддержка: " + T.s + " &#8381; в месяц", "Предоплаты нет, оплата при готовности сайта примерно на 80%"];
+      if (tier === 2 && seo !== "none") facts.push("Первые клиенты из поиска без рекламы обычно в течение двух месяцев");
+      $("#calcFacts").innerHTML = facts.map(function (x) { return "<li>" + x + "</li>"; }).join("");
+      var tr = $("#calcTraffic");
+      if (traffic) {
+        tr.hidden = false;
+        tr.innerHTML = "<b>Бесплатный разбор трафика</b>" + (niche ?
+          "Посчитаю по данным Яндекса, сколько людей в месяц ищут «" + esc(niche) + (city ? " " + esc(city) : "") +
+          "» и похожие запросы, и пришлю в ответ на ваше сообщение." :
+          "Напишите в сообщении свою нишу и город, и я пришлю, сколько людей в месяц ищут вашу услугу в Яндексе.");
+      } else tr.hidden = true;
+      var msg = "Здравствуйте, Александр! Посчитал сайт на вашей странице.\n" +
+        "Тип: " + TYPES[type] + "\n" +
+        "Функции: " + (f.length ? f.join(", ") : "без особых функций") + "\n" +
+        "Продвижение: " + SEO[seo] + "\n" +
+        (niche ? "Ниша: " + niche + "\n" : "") + (city ? "Город: " + city + "\n" : "") +
+        "Ориентир: " + T.n + ", " + T.p + " руб.\n" +
+        (traffic ? "Хочу бесплатный разбор: сколько людей ищут мою услугу." : "");
+      $("#calcWa").href = "https://wa.me/79919149854?text=" + encodeURIComponent(msg);
+      $("#calcSms").href = "sms:+79919149854?&body=" + encodeURIComponent(msg);
+      res.scrollIntoView && setTimeout(function () {
+        var r = calc.getBoundingClientRect();
+        if (r.top < 70 || r.top > window.innerHeight * 0.4)
+          window.scrollTo({ top: window.scrollY + r.top - 90, behavior: reduced ? "auto" : "smooth" });
+      }, 30);
+    }
+    function esc(t) { return t.replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+    calc.addEventListener("change", function (e) {
+      next.disabled = !ready();
+      /* на шагах с одним вариантом сразу листаем дальше */
+      if (e.target.type === "radio" && at < steps.length - 1) setTimeout(function () { show(at + 1); }, 220);
+    });
+    next.addEventListener("click", function () { if (ready()) show(at + 1); });
+    back.addEventListener("click", function () { show(Math.max(0, at - 1)); });
+    calc.addEventListener("submit", function (e) { e.preventDefault(); });
+    $$('input[type="text"]', calc).forEach(function (el) {
+      el.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); show(at + 1); } });
+    });
+    show(0);
+  })();
+
   /* ---------- 5. Вопросы ---------- */
   var FAQ = [
     ["Сколько времени занимает сайт?", "Лендинг 5-7 дней, сайт с приложением 10-14 дней, проект с 3D до трёх недель. Отсчёт идёт с момента, когда вы прислали тексты и фото. Если материалов нет, помогаю их собрать, это добавляет пару дней."],

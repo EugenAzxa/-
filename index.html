@@ -76,7 +76,7 @@
     <a href="#primery">Примеры</a>
     <a href="/seo">SEO и AI</a>
     <a href="/blog">Блог</a>
-    <a href="#process">Как работаем</a>
+    <a href="#raschet">Расчёт</a>
     <a href="#faq">Вопросы</a>
   </nav>
   <a class="btn btn--sm nav__call" href="tel:+79919149854">
@@ -126,7 +126,7 @@
       <p class="lead">Лендинг, сайт с веб-приложением или проект с 3D. От 20 000 рублей, запуск от 7 дней. Работаю сам: вы говорите с тем, кто пишет код.</p>
       <div class="hero__cta">
         <a class="btn btn--lg" href="tel:+79919149854">Позвонить<span class="wide">&nbsp;сейчас</span></a>
-        <a class="btn btn--ghost btn--lg" href="#tarify">Смотреть тарифы</a>
+        <a class="btn btn--ghost btn--lg" href="#raschet">Рассчитать сайт</a>
       </div>
     </div>
 
@@ -179,6 +179,7 @@
           <li>Кнопки звонка, WhatsApp и карты проезда</li>
           <li>Подключение домена и хостинга</li>
           <li>Базовая настройка для поиска и Яндекс Метрика</li>
+          <li>Политика и согласие на обработку данных по 152-ФЗ</li>
         </ul>
         <p class="tier__time">Срок: 5-7 дней</p>
         <a class="btn btn--block" href="tel:+79919149854">Обсудить лендинг</a>
@@ -246,6 +247,94 @@
         <h3>Что такое поддержка за 2 000, 3 000 или 4 000 рублей в месяц</h3>
         <p>Это не абонентская плата за воздух. В неё входит: присмотр за сайтом и хостингом, резервные копии, обновления и защита, мелкие правки текстов и цен, замена фото, ответ на ваш вопрос в тот же день. Хостинг и домен вы оплачиваете сами напрямую провайдеру, я только слежу за сроками и заранее напоминаю о продлении. Если сайт упал ночью, поднимаю его я, а не вы. Отказаться можно в любой момент, сайт останется вашим.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- РАСЧЁТ СТОИМОСТИ -->
+<section class="section section--tint" id="raschet">
+  <div class="wrap">
+    <header class="shead reveal">
+      <p class="eyebrow">Расчёт за минуту</p>
+      <h2 class="h2">Рассчитайте стоимость<br>своего сайта</h2>
+      <p class="shead__note">Четыре вопроса, и вы увидите цену, срок и подходящий тариф. А если укажете нишу и город, я бесплатно посчитаю, сколько людей в месяц ищут вашу услугу в Яндексе, то есть сколько клиентов можно получать без рекламы.</p>
+    </header>
+
+    <div class="calc-wrap">
+    <form class="calc reveal" id="calc" novalidate>
+      <div class="calc__bar" aria-hidden="true"><i id="calcBar"></i></div>
+      <ol class="calc__steps" id="calcSteps" aria-hidden="true"><li class="on">Тип</li><li>Функции</li><li>Продвижение</li><li>Ниша</li></ol>
+
+      <fieldset class="calc__step is-on" data-step="0">
+        <legend>Какой сайт нужен?</legend>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="type" value="landing"><span><b>Одна страница</b><i>Лендинг под одну услугу или акцию</i></span></label>
+          <label class="opt"><input type="radio" name="type" value="multi"><span><b>Несколько страниц</b><i>Услуги, о компании, цены, блог</i></span></label>
+          <label class="opt"><input type="radio" name="type" value="shop"><span><b>Каталог или магазин</b><i>Товары, фильтры, корзина</i></span></label>
+          <label class="opt"><input type="radio" name="type" value="unknown"><span><b>Пока не знаю</b><i>Подскажу на звонке</i></span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="calc__step" data-step="1">
+        <legend>Что должен уметь сайт? <small>можно несколько или ничего</small></legend>
+        <div class="opts opts--chips">
+          <label class="chip"><input type="checkbox" name="f" value="Онлайн-запись"><span>Онлайн-запись</span></label>
+          <label class="chip"><input type="checkbox" name="f" value="Калькулятор цены"><span>Калькулятор цены</span></label>
+          <label class="chip"><input type="checkbox" name="f" value="Личный кабинет"><span>Личный кабинет</span></label>
+          <label class="chip"><input type="checkbox" name="f" value="Оплата на сайте"><span>Оплата на сайте</span></label>
+          <label class="chip"><input type="checkbox" name="f" value="CRM или 1С"><span>CRM или 1С</span></label>
+          <label class="chip"><input type="checkbox" name="f" value="Telegram-бот"><span>Telegram-бот</span></label>
+          <label class="chip"><input type="checkbox" name="f" value="Админка"><span>Сам меняю цены и фото</span></label>
+          <label class="chip chip--top"><input type="checkbox" name="f" value="3D и анимации"><span>3D и анимации</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="calc__step" data-step="2">
+        <legend>Нужны клиенты из поиска без рекламы?</legend>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="seo" value="none"><span><b>Пока нет</b><i>Базовая настройка для поиска входит в любой тариф</i></span></label>
+          <label class="opt"><input type="radio" name="seo" value="seo"><span><b>Да, Яндекс и Google</b><i>SEO: сайт поднимается в поиске по запросам вашей ниши</i></span></label>
+          <label class="opt opt--hot"><input type="radio" name="seo" value="ai"><span><b>Да, и ещё нейросети</b><i>SEO и AI SEO: чтобы вас советовали ChatGPT, Алиса, Gemini, DeepSeek</i></span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="calc__step" data-step="3">
+        <legend>Чем занимаетесь и где? <small>необязательно, но тогда посчитаю трафик</small></legend>
+        <div class="fields">
+          <label class="field"><span>Ниша или услуга</span><input type="text" name="niche" placeholder="Например, барбершоп" autocomplete="off"></label>
+          <label class="field"><span>Город</span><input type="text" name="city" placeholder="Например, Казань" autocomplete="address-level2"></label>
+        </div>
+        <label class="check"><input type="checkbox" name="traffic" checked><span>Хочу бесплатный разбор: сколько людей в месяц ищут мою услугу в Яндексе</span></label>
+      </fieldset>
+
+      <div class="calc__result" id="calcResult" hidden>
+        <p class="eyebrow">Ваш расчёт</p>
+        <div class="calc__price" id="calcPrice"></div>
+        <p class="calc__tier" id="calcTier"></p>
+        <ul class="calc__facts" id="calcFacts"></ul>
+        <div class="calc__traffic" id="calcTraffic"></div>
+        <p class="calc__note">Это ориентир. Точную сумму называю после короткого звонка, предоплаты нет.</p>
+        <div class="calc__send">
+          <a class="btn" id="calcWa" href="https://wa.me/79919149854" target="_blank" rel="noopener">Отправить расчёт в WhatsApp</a>
+          <a class="btn btn--ghost" id="calcSms" href="sms:+79919149854">Отправить SMS</a>
+          <a class="btn btn--ghost" href="tel:+79919149854">Позвонить</a>
+        </div>
+        <p class="calc__small">Расчёт никуда не уходит, пока вы сами не нажмёте кнопку. Сайт не сохраняет ваши данные.</p>
+      </div>
+
+      <div class="calc__nav">
+        <button class="btn btn--ghost" type="button" id="calcBack" hidden>Назад</button>
+        <button class="btn" type="button" id="calcNext" disabled>Дальше</button>
+      </div>
+    </form>
+    <aside class="calc-side reveal">
+      <img src="assets/img/present.webp" alt="Александр объясняет, как будет устроен сайт" loading="lazy" decoding="async">
+      <ol>
+        <li><b>Отвечу в тот же день</b>Звонком или сообщением, как вам удобнее.</li>
+        <li><b>Пришлю разбор трафика</b>Сколько людей ищут вашу услугу в вашем городе.</li>
+        <li><b>Назову точную цену</b>И покажу, как будет выглядеть первый экран.</li>
+      </ol>
+    </aside>
     </div>
   </div>
 </section>
@@ -339,6 +428,59 @@
         <p>Подключаю домен, ставлю аналитику, проверяю формы. Дальше сайт живёт, а я остаюсь на связи по тарифу поддержки.</p>
       </li>
     </ol>
+  </div>
+</section>
+
+<!-- ЗАКОНЫ РФ -->
+<section class="section section--tint" id="zakon">
+  <div class="wrap">
+    <header class="shead reveal">
+      <p class="eyebrow">По закону</p>
+      <h2 class="h2">Сайт по правилам<br>Российской Федерации</h2>
+      <p class="shead__note">Штрафы за нарушения с персональными данными в 2025 году заметно выросли, и проверяют не только крупный бизнес. Я делаю сайты по действующим требованиям, слежу за новыми законами и обновляю сайты на поддержке, когда правила меняются.</p>
+    </header>
+    <div class="law-grid">
+      <article class="law reveal">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+        <h3>Персональные данные</h3>
+        <p>Политика обработки данных и отдельное согласие для каждой формы по 152-ФЗ. Без галочки, спрятанной в мелком шрифте.</p>
+      </article>
+      <article class="law reveal">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M7 20h10"/><path d="M12 16v4"/></svg>
+        <h3>Данные хранятся в России</h3>
+        <p>Заявки и данные клиентов храню на серверах в России, как требует закон о локализации персональных данных.</p>
+      </article>
+      <article class="law reveal">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+        <h3>Уведомление в Роскомнадзор</h3>
+        <p>Подскажу, нужно ли вашему бизнесу уведомление об обработке персональных данных, и помогу его подать.</p>
+      </article>
+      <article class="law reveal">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 9.5h.01"/><path d="M14 8.5h.01"/><path d="M15.5 14h.01"/><path d="M9.5 15h.01"/></svg>
+        <h3>Cookie и аналитика</h3>
+        <p>Уведомление о cookie и корректные настройки Яндекс Метрики, чтобы аналитика не нарушала права посетителей.</p>
+      </article>
+      <article class="law reveal">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <h3>Вход через российские сервисы</h3>
+        <p>Личный кабинет с входом по номеру телефона, через Госуслуги, VK ID или Яндекс ID. Вход через иностранные аккаунты на российских сайтах запрещён.</p>
+      </article>
+      <article class="law reveal">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1Z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>
+        <h3>Маркировка рекламы</h3>
+        <p>Если на сайте или в рассылке есть реклама, подскажу, как её промаркировать по закону о рекламе.</p>
+      </article>
+      <article class="law reveal">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+        <h3>Русский язык для покупателей</h3>
+        <p>Вся информация для покупателей на русском языке. Иностранный текст только как дубль к русскому, как требуют правила с 2026 года.</p>
+      </article>
+      <article class="law reveal">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M3 9h18"/><path d="M5 9V5h14v4"/><path d="M6 9v10h12V9"/><path d="M10 13h4"/></svg>
+        <h3>Реквизиты и оферта</h3>
+        <p>Для магазинов и услуг с оплатой: реквизиты продавца, публичная оферта, условия доставки и возврата по закону о защите прав потребителей.</p>
+      </article>
+    </div>
   </div>
 </section>
 

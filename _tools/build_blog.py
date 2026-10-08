@@ -213,7 +213,7 @@ def cta():
   <div class="post-cta__btns">
     <a class="btn" href="tel:%(tel)s">Позвонить</a>
     <a class="btn btn--ghost" href="sms:%(tel)s">Написать SMS</a>
-    <a class="btn btn--ghost" href="/#tarify">Тарифы</a>
+    <a class="btn btn--ghost" href="/#raschet">Рассчитать стоимость</a>
   </div>
   <p class="post-cta__small">Связь по телефону. Если не дозвонились, напишите SMS на этот номер, перезвоню в тот же день.</p>
 </aside>""" % dict(tel=TEL, ph=PHONE)
