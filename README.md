@@ -12,7 +12,7 @@ assets/css/style.css  стили и адаптив
 assets/js/main.js     анимация прокрутки, примеры ниш, вопросы и ответы
 assets/img/*.webp     фотографии с убранным фоном
 assets/img/seo/       скриншоты для страницы SEO
-assets/film/d, m      кадры ролика по прокрутке (d - компьютер 1600px, m - телефон 1280px), poster.webp - последний кадр
+assets/film/d2, m2    кадры ролика по прокрутке (d - компьютер 1600px, m - телефон 1280px), poster.webp - последний кадр
 ```
 
 ## Как поменять текст и цены
@@ -65,8 +65,8 @@ python3 -m http.server 8123
 Пересобрать кадры из нового mp4:
 
 ```bash
-ffmpeg -i full.mp4 -vf "fps=15,scale=1600:-2" -c:v libwebp -quality 74 assets/film/d/%03d.webp
-ffmpeg -i full.mp4 -vf "fps=15,scale=1280:-2" -c:v libwebp -quality 64 assets/film/m/%03d.webp
+ffmpeg -i full.mp4 -vf "fps=15,scale=1600:-2" -c:v libwebp -quality 74 assets/film/d2/%03d.webp
+ffmpeg -i full.mp4 -vf "fps=15,scale=1280:-2" -c:v libwebp -quality 64 assets/film/m2/%03d.webp
 ```
 
 Если число кадров изменится, поправить `FILM_N` и `FILM_COLS` в `main.js`.

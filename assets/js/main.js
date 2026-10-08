@@ -440,7 +440,7 @@
     if (reduced || !ctx) { film.classList.add("film--static"); return; }
 
     var small = window.innerWidth < 700;   /* телефон: кадры 1280px, компьютер: 1600px */
-    var dir = "assets/film/" + (small ? "m" : "d") + "/";
+    var dir = "assets/film/" + (small ? "m2" : "d2") + "/";   /* новая версия ролика = новая папка, кеш браузера годовой */
     var frames = new Array(FILM_N), got = 0, started = false;
     var cur = 0, want = 0, drawn = -1, cw = 0, chh = 0;
 
