@@ -66,24 +66,34 @@
 </div>
 
 <!-- ШАПКА -->
+<!-- NAV:START (собирается _tools/build_blog.py) -->
 <header class="nav" id="nav">
-  <a class="nav__logo" href="#hero" aria-label="На главную">
+  <a class="nav__logo" href="/" aria-label="На главную">
     <span class="nav__mark">Александр</span>
     <span class="nav__sub">разработка сайтов</span>
   </a>
-  <nav class="nav__links" aria-label="Разделы">
-    <a href="#tarify">Тарифы</a>
-    <a href="#primery">Примеры</a>
-    <a href="/seo">SEO и AI</a>
+  <nav class="nav__links" id="navLinks" aria-label="Разделы">
+    <a href="/#tarify">Тарифы</a>
+    <a href="/#raschet">Расчёт</a>
+    <div class="nav__dd">
+      <button type="button" aria-expanded="false">Услуги<svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="nav__menu">
+        <a href="/">Сайты под ключ</a>
+        <a href="/seo">SEO и AI-поиск</a>
+        <a href="/prezentacii">Презентации</a>
+        <a href="/ai-video">AI-видео</a>
+      </div>
+    </div>
     <a href="/blog">Блог</a>
-    <a href="#raschet">Расчёт</a>
-    <a href="#faq">Вопросы</a>
+    <a href="/#faq">Вопросы</a>
   </nav>
   <a class="btn btn--sm nav__call" href="tel:+79919149854">
     <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
     <span>+7 991 914-98-54</span>
   </a>
+  <button class="nav__burger" type="button" id="navBurger" aria-label="Меню" aria-expanded="false" aria-controls="navLinks"><i></i><i></i></button>
 </header>
+<!-- NAV:END -->
 
 <main>
 
@@ -339,6 +349,37 @@
   </div>
 </section>
 
+<!-- ЕЩЁ ДЕЛАЮ -->
+<section class="section" id="uslugi">
+  <div class="wrap">
+    <header class="shead reveal">
+      <p class="eyebrow">Кроме сайтов</p>
+      <h2 class="h2">Ещё делаю</h2>
+      <p class="shead__note">Всё, что помогает продавать: презентации для клиентов и инвесторов, ролики на нейросетях, продвижение в поиске. Цена по договорённости.</p>
+    </header>
+    <div class="more3">
+      <a class="more3__card reveal" href="/ai-video">
+        <span class="more3__media"><video src="/assets/work/ai/coffee.mp4" poster="/assets/work/ai/coffee.jpg" muted loop playsinline autoplay preload="none" aria-hidden="true"></video></span>
+        <b>AI-видео любой сложности</b>
+        <span>Реклама, анимация логотипа, оживление фото, вертикальные ролики</span>
+        <em>Смотреть ролики</em>
+      </a>
+      <a class="more3__card reveal" href="/prezentacii">
+        <span class="more3__media"><img src="/assets/work/pres/kino-4.webp" alt="" loading="lazy" decoding="async"></span>
+        <b>Презентации любой сложности</b>
+        <span>Питч-деки, коммерческие предложения, отчёты, каталоги, выступления</span>
+        <em>Смотреть слайды</em>
+      </a>
+      <a class="more3__card reveal" href="/seo">
+        <span class="more3__media"><img src="/assets/img/seo/ai-hero.webp" alt="" loading="lazy" decoding="async"></span>
+        <b>SEO и AI-поиск</b>
+        <span>Клиенты из Яндекса, Google и нейросетей без оплаты рекламы</span>
+        <em>Смотреть цифры</em>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- ФИЛЬМ ПО ПРОКРУТКЕ: из головы в браузер -->
 <section class="film" id="ideya" aria-label="Как рождается сайт">
   <div class="film__sticky">
@@ -497,18 +538,21 @@
   <span class="post-card__tag">AI SEO</span>
   <h3>Как попасть в ответы ChatGPT, Алисы и других нейросетей</h3>
   <p>Чтобы нейросети называли ваш бизнес, откройте сайт их роботам, напишите на нём ясные факты и FAQ, добавьте разметку и заполните карточки на картах.</p>
-  <span class="post-card__meta">5 мин чтения</span>
+  <span class="hashtags"><i>#AISEO</i><i>#нейросети</i><i>#ChatGPT</i></span>
+  <span class="post-card__meta">6 мин чтения</span>
 </a>
 <a class="post-card reveal" href="/blog/skolko-stoit-sajt" data-tag="Цены">
   <span class="post-card__tag">Цены</span>
   <h3>Сколько стоит сайт в 2026 году и из чего складывается цена</h3>
   <p>Сайт для малого бизнеса у частного разработчика стоит от 20 000 до 60 000 ₽. Из чего складывается цена, какие расходы будут после запуска и как не переплатить.</p>
+  <span class="hashtags"><i>#ценасайта</i><i>#разработкасайтов</i><i>#лендинг</i></span>
   <span class="post-card__meta">5 мин чтения</span>
 </a>
 <a class="post-card reveal" href="/blog/seo-dlya-malogo-biznesa" data-tag="SEO">
   <span class="post-card__tag">SEO</span>
   <h3>SEO для малого бизнеса: как получать клиентов из поиска без рекламы</h3>
   <p>Клиенты из Яндекса и Google без рекламы приходят, когда у каждой услуги своя страница, сайт подключён к Вебмастеру и связан с карточками на картах.</p>
+  <span class="hashtags"><i>#SEO</i><i>#продвижениесайта</i><i>#Яндекс</i></span>
   <span class="post-card__meta">5 мин чтения</span>
 </a>
     </div>

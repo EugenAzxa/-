@@ -8,13 +8,15 @@ sitemap.xml, robots.txt, llms.txt.
 import io, os, re, glob, html, json, datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = "https://rabota-ne-volk.vercel.app"
+# адрес сайта для canonical, карты сайта и llms.txt. После переезда на работаневолк.рф:
+#   SITE_URL=https://xn--80aacfo5agnheo1a.xn--p1ai python3 _tools/build_blog.py   (или поменять значение ниже)
+SITE = os.environ.get("SITE_URL", "https://rabota-ne-volk.vercel.app")
 PHONE = "+7 991 914-98-54"
 TEL = "+79919149854"
 DATE = "2026-10-08"          # дата публикации по умолчанию, можно задать в файле полем date:
 MONTHS = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа",
           "сентября", "октября", "ноября", "декабря"]
-TAG_ORDER = ["Цены", "Разработка", "SEO", "AI SEO", "Запуск", "Ниши"]
+TAG_ORDER = ["Цены", "Разработка", "SEO", "AI SEO", "Презентации", "AI-видео", "Запуск", "Ниши"]
 
 
 def rd(p): return io.open(p, encoding="utf-8").read()
@@ -117,6 +119,7 @@ def parse(p):
     body = m.group(2)
     words = len(re.findall(r"[\wЁё-]+", re.sub(r"```.*?```", "", body, flags=re.S)))
     meta.setdefault("date", DATE)
+    meta["hashtags"] = [t.strip().lstrip("#").replace(" ", "") for t in meta.get("tags", "").split(",") if t.strip()]
     meta["words"] = words
     meta["mins"] = max(2, round(words / 180))
     meta["html"], meta["toc"] = md(body)
@@ -154,25 +157,39 @@ def head(title, desc, url, og_type="website", extra=""):
 """ % dict(t=esc(title), d=esc(desc), u=url, ot=og_type, site=SITE, x=extra)
 
 
-def nav():
-    return """<header class="nav is-stuck" id="nav">
+NAV_ITEMS = [("tarify", "/#tarify", "Тарифы"), ("raschet", "/#raschet", "Расчёт")]
+SERVICES = [("seo", "/seo", "SEO и AI-поиск"), ("pres", "/prezentacii", "Презентации"), ("ai", "/ai-video", "AI-видео")]
+
+
+def nav(cur="", stuck=True):
+    cur_attr = lambda k: ' aria-current="page"' if k == cur else ""
+    items = "".join('\n    <a href="%s"%s>%s</a>' % (u, cur_attr(k), t) for k, u, t in NAV_ITEMS)
+    sub = "".join('\n        <a href="%s"%s>%s</a>' % (u, cur_attr(k), t) for k, u, t in SERVICES)
+    svc_on = ' class="is-cur"' if cur in [k for k, _, _ in SERVICES] else ""
+    return """<!-- NAV:START (собирается _tools/build_blog.py) -->
+<header class="nav%(stuck)s" id="nav">
   <a class="nav__logo" href="/" aria-label="На главную">
     <span class="nav__mark">Александр</span>
     <span class="nav__sub">разработка сайтов</span>
   </a>
-  <nav class="nav__links" aria-label="Разделы">
-    <a href="/#tarify">Тарифы</a>
-    <a href="/#primery">Примеры</a>
-    <a href="/seo">SEO и AI</a>
-    <a href="/blog" aria-current="page">Блог</a>
+  <nav class="nav__links" id="navLinks" aria-label="Разделы">%(items)s
+    <div class="nav__dd">
+      <button type="button"%(svc)s aria-expanded="false">Услуги<svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="nav__menu">
+        <a href="/">Сайты под ключ</a>%(sub)s
+      </div>
+    </div>
+    <a href="/blog"%(blog)s>Блог</a>
     <a href="/#faq">Вопросы</a>
   </nav>
-  <a class="btn btn--sm nav__call" href="tel:%s">
-    %s
-    <span>%s</span>
+  <a class="btn btn--sm nav__call" href="tel:%(tel)s">
+    %(ico)s
+    <span>%(ph)s</span>
   </a>
+  <button class="nav__burger" type="button" id="navBurger" aria-label="Меню" aria-expanded="false" aria-controls="navLinks"><i></i><i></i></button>
 </header>
-""" % (TEL, ICO_PHONE, PHONE)
+<!-- NAV:END -->
+""" % dict(items=items, sub=sub, svc=svc_on, blog=cur_attr("blog"), stuck=" is-stuck" if stuck else "", tel=TEL, ico=ICO_PHONE, ph=PHONE)
 
 
 def tail():
@@ -195,13 +212,31 @@ def tail():
 """ % dict(tel=TEL, ph=PHONE, ico=ICO_PHONE)
 
 
+def hashtags(a, n=None, cls="hashtags"):
+    tags = a["hashtags"][:n] if n else a["hashtags"]
+    if not tags: return ""
+    return '<span class="%s">%s</span>' % (cls, "".join("<i>#%s</i>" % esc(t) for t in tags))
+
+
 def card(a, cls="post-card"):
     return """<a class="%s reveal" href="/blog/%s" data-tag="%s">
   <span class="post-card__tag">%s</span>
   <h3>%s</h3>
   <p>%s</p>
+  %s
   <span class="post-card__meta">%d мин чтения</span>
-</a>""" % (cls, a["slug"], esc(a["tag"]), esc(a["tag"]), esc(a["title"]), esc(a["description"]), a["mins"])
+</a>""" % (cls, a["slug"], esc(a["tag"]), esc(a["tag"]), esc(a["title"]), esc(a["description"]), hashtags(a, 3), a["mins"])
+
+
+def more():
+    return """<aside class="post-more">
+  <p class="eyebrow">Ещё делаю</p>
+  <div class="post-more__grid">
+    <a href="/seo"><b>SEO и AI-поиск</b><span>Клиенты из Яндекса, Google и нейросетей без рекламы</span></a>
+    <a href="/prezentacii"><b>Презентации</b><span>Для инвесторов, клиентов и сцены, любой сложности</span></a>
+    <a href="/ai-video"><b>AI-видео</b><span>Реклама, логотипы, оживление фото без съёмок</span></a>
+  </div>
+</aside>"""
 
 
 def cta():
@@ -232,6 +267,15 @@ def main():
 
     # убираем страницы удалённых статей
     keep = set(p["slug"] + ".html" for p in posts) | {"index.html"}
+    import sys
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import pages
+    for pg in pages.PAGES:
+        out = head(pg["title"], pg["desc"], "%s/%s" % (SITE, pg["slug"]))
+        out += '<body class="page-svc%s">\n\n' % (" page-dark" if pg.get("dark") else "") + nav(pg["nav"], not pg.get("dark")) + "\n<main>\n" + pg["body"] + "\n" + \
+            pages.contact(*pg["contact"]) + "\n</main>\n\n" + tail()
+        wr(os.path.join(ROOT, pg["slug"] + ".html"), out)
+
     for f in glob.glob(os.path.join(ROOT, "blog", "*.html")):
         if os.path.basename(f) not in keep: os.remove(f)
 
@@ -243,6 +287,7 @@ def main():
             "headline": a["title"], "description": a["description"],
             "datePublished": a["date"], "dateModified": a["date"],
             "inLanguage": "ru", "mainEntityOfPage": url, "wordCount": a["words"],
+            "keywords": ", ".join(a["hashtags"]), "articleSection": a["tag"],
             "author": {"@type": "Person", "name": "Александр", "url": SITE + "/"},
             "publisher": {"@type": "Organization", "name": "Александр, разработка сайтов", "url": SITE + "/",
                           "logo": {"@type": "ImageObject", "url": SITE + "/assets/img/og.jpg"}},
@@ -254,7 +299,9 @@ def main():
                 {"@type": "ListItem", "position": 2, "name": "Блог", "item": SITE + "/blog"},
                 {"@type": "ListItem", "position": 3, "name": a["title"], "item": url}]
         }]
-        extra = '<meta property="article:published_time" content="%s">\n<script type="application/ld+json">%s</script>\n' % (
+        extra = "".join('<meta property="article:tag" content="%s">\n' % esc(t) for t in a["hashtags"]) + \
+            ('<meta name="keywords" content="%s">\n' % esc(", ".join(a["hashtags"])) if a["hashtags"] else "") + \
+            '<meta property="article:published_time" content="%s">\n<script type="application/ld+json">%s</script>\n' % (
             a["date"], json.dumps(ld, ensure_ascii=False))
         same = [b for b in posts if b is not a and b["tag"] == a["tag"]]
         other = [b for b in posts if b is not a and b["tag"] != a["tag"]]
@@ -262,7 +309,7 @@ def main():
         toc = "".join('<li><a href="#%s">%s</a></li>' % (h, inline(t)) for h, t in a["toc"]
                       if t.lower() not in ("если нужна помощь",))
         page = head(a["title"] + " - блог Александра", a["description"], url, "article", extra)
-        page += '<body class="page-post">\n\n' + nav() + """
+        page += '<body class="page-post">\n\n' + nav("blog") + """
 <main>
 <article class="post">
   <div class="wrap post__wrap">
@@ -271,6 +318,7 @@ def main():
       <span class="post-card__tag">%(tag)s</span>
       <h1>%(title)s</h1>
       <p class="post__meta">%(date)s &middot; %(mins)d мин чтения &middot; Александр</p>
+      %(hash)s
     </header>
     <div class="post__grid">
       <aside class="post__toc" aria-label="Содержание">
@@ -282,6 +330,7 @@ def main():
       </div>
     </div>
     %(cta)s
+    %(more)s
   </div>
 </article>
 
@@ -296,7 +345,7 @@ def main():
 </main>
 
 """ % dict(tag=esc(a["tag"]), title=esc(a["title"]), date=ru_date(a["date"]), mins=a["mins"], toc=toc,
-           body=a["html"], cta=cta(), rel="\n".join(card(b) for b in rel))
+           body=a["html"], cta=cta(), more=more(), hash=hashtags(a), rel="\n".join(card(b) for b in rel))
         page += tail()
         wr(os.path.join(ROOT, "blog", a["slug"] + ".html"), page)
 
@@ -310,7 +359,7 @@ def main():
                 "Простым языком о сайтах для малого бизнеса: сколько стоит сайт, как выбрать домен и хостинг, SEO без рекламы, как попасть в ответы ChatGPT и Алисы.",
                 SITE + "/blog", "website",
                 '<script type="application/ld+json">%s</script>\n' % json.dumps(ld, ensure_ascii=False))
-    page += '<body class="page-blog">\n\n' + nav() + """
+    page += '<body class="page-blog">\n\n' + nav("blog") + """
 <main>
 <section class="seo-hero blog-hero">
   <div class="wrap">
@@ -364,8 +413,16 @@ b.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)re
     s = re.sub(r"<!-- BLOG:START.*?<!-- BLOG:END -->", lambda m: block, s, flags=re.S)
     wr(ip, s)
 
+    for fn, cur in (("index.html", ""), ("seo.html", "seo")):
+        fp = os.path.join(ROOT, fn)
+        t = rd(fp)
+        t = re.sub(r'(<link rel="canonical" href=")https://[^/"]+', lambda m: m.group(1) + SITE, t)
+        t = re.sub(r"(<!-- NAV:START.*?<!-- NAV:END -->\n)|(<header class=\"nav[^\n]*\n.*?</header>\n)", lambda m: nav(cur, fn != "index.html"), t, count=1, flags=re.S)
+        wr(fp, t)
+
     # sitemap, robots, llms
-    urls = [(SITE + "/", "1.0"), (SITE + "/seo", "0.8"), (SITE + "/blog", "0.8")] + \
+    urls = [(SITE + "/", "1.0"), (SITE + "/seo", "0.8"), (SITE + "/prezentacii", "0.8"), (SITE + "/ai-video", "0.8"),
+            (SITE + "/blog", "0.8")] + \
            [("%s/blog/%s" % (SITE, p["slug"]), "0.6") for p in posts]
     today = datetime.date.today().isoformat()
     sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + \
@@ -416,6 +473,8 @@ Sitemap: %s/sitemap.xml
 - Лендинг: 20 000 - 30 000 рублей, срок 5-7 дней, поддержка 2 000 рублей в месяц.
 - Сайт и веб-приложение (каталог, калькулятор, онлайн-запись, личный кабинет, админка, интеграции): 30 000 - 40 000 рублей, срок 10-14 дней, поддержка 3 000 рублей в месяц.
 - Сайт высшего уровня (3D, анимации по прокрутке, SEO под Яндекс и Google, AI SEO под ChatGPT, Gemini, Claude, DeepSeek и Алису): 50 000 - 60 000 рублей, срок 14-21 день, поддержка 4 000 рублей в месяц. Первые клиенты из поиска и нейросетей без оплаты рекламы обычно приходят в течение двух месяцев.
+- Презентации любой сложности (питч-деки, коммерческие предложения, отчёты, каталоги, выступления, AI-иллюстрации): цена по договорённости.
+- AI-видео любой сложности (реклама, анимация логотипа, оживление фото, исторические сцены, вертикальные ролики, видео для сайта): цена по договорённости.
 - Домен оформляется на клиента, хостинг и домен клиент оплачивает напрямую провайдеру.
 
 ## Контакты
@@ -425,11 +484,14 @@ Sitemap: %s/sitemap.xml
 ## Страницы
 - [Главная: тарифы, примеры, вопросы](%(site)s/)
 - [SEO и AI-поиск: живые цифры проекта](%(site)s/seo)
+- [Презентации любой сложности](%(site)s/prezentacii)
+- [AI-видео любой сложности](%(site)s/ai-video)
 - [Блог](%(site)s/blog)
 
 ## Статьи блога
 %(posts)s
-""" % dict(ph=PHONE, site=SITE, posts="\n".join("- [%s](%s/blog/%s): %s" % (p["title"], SITE, p["slug"], p["description"]) for p in posts))
+""" % dict(ph=PHONE, site=SITE, posts="\n".join("- [%s](%s/blog/%s): %s%s" % (p["title"], SITE, p["slug"], p["description"],
+          (" Теги: " + ", ".join(p["hashtags"]) + ".") if p["hashtags"] else "") for p in posts))
     wr(os.path.join(ROOT, "llms.txt"), llms)
     print("статей:", len(posts), "| слов:", sum(p["words"] for p in posts))
     for p in posts: print("  %-40s %-10s %4d слов" % (p["slug"], p["tag"], p["words"]))

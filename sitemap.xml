@@ -2,6 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://rabota-ne-volk.vercel.app/</loc><lastmod>2026-10-08</lastmod><priority>1.0</priority></url>
   <url><loc>https://rabota-ne-volk.vercel.app/seo</loc><lastmod>2026-10-08</lastmod><priority>0.8</priority></url>
+  <url><loc>https://rabota-ne-volk.vercel.app/prezentacii</loc><lastmod>2026-10-08</lastmod><priority>0.8</priority></url>
+  <url><loc>https://rabota-ne-volk.vercel.app/ai-video</loc><lastmod>2026-10-08</lastmod><priority>0.8</priority></url>
   <url><loc>https://rabota-ne-volk.vercel.app/blog</loc><lastmod>2026-10-08</lastmod><priority>0.8</priority></url>
   <url><loc>https://rabota-ne-volk.vercel.app/blog/skolko-stoit-sajt</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
   <url><loc>https://rabota-ne-volk.vercel.app/blog/3d-na-sajte</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
@@ -14,6 +16,14 @@
   <url><loc>https://rabota-ne-volk.vercel.app/blog/yandex-karty-i-2gis</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
   <url><loc>https://rabota-ne-volk.vercel.app/blog/chto-takoe-llms-txt</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
   <url><loc>https://rabota-ne-volk.vercel.app/blog/kak-popast-v-otvety-nejrosetej</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
+  <url><loc>https://rabota-ne-volk.vercel.app/blog/kak-zakazat-prezentaciyu</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
+  <url><loc>https://rabota-ne-volk.vercel.app/blog/kommercheskoe-predlozhenie</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
+  <url><loc>https://rabota-ne-volk.vercel.app/blog/prezentaciya-dlya-investorov</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
+  <url><loc>https://rabota-ne-volk.vercel.app/blog/prezentaciya-s-nejrosetyami</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
+  <url><loc>https://rabota-ne-volk.vercel.app/blog/ai-video-dlya-biznesa</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
+  <url><loc>https://rabota-ne-volk.vercel.app/blog/ozhivlenie-foto</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
+  <url><loc>https://rabota-ne-volk.vercel.app/blog/reklamnyj-rolik-na-nejrosetyah</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
+  <url><loc>https://rabota-ne-volk.vercel.app/blog/video-na-sajte</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
   <url><loc>https://rabota-ne-volk.vercel.app/blog/hosting-dlya-sajta</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
   <url><loc>https://rabota-ne-volk.vercel.app/blog/kak-vybrat-domen</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>
   <url><loc>https://rabota-ne-volk.vercel.app/blog/podderzhka-sajta</loc><lastmod>2026-10-08</lastmod><priority>0.6</priority></url>

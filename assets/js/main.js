@@ -663,6 +663,45 @@
     show(0);
   })();
 
+  /* ---------- 4c. Меню: «Услуги» и кнопка на телефоне ---------- */
+  var burger = $("#navBurger"), navEl = $("#nav");
+  if (burger && navEl) {
+    burger.addEventListener("click", function () {
+      var open = navEl.classList.toggle("is-open");
+      burger.setAttribute("aria-expanded", open ? "true" : "false");
+      document.body.classList.toggle("is-menu", open);
+    });
+    $$("#navLinks a").forEach(function (a) {
+      a.addEventListener("click", function () {
+        navEl.classList.remove("is-open"); burger.setAttribute("aria-expanded", "false"); document.body.classList.remove("is-menu");
+      });
+    });
+  }
+  $$(".nav__dd > button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var dd = b.parentNode, open = dd.classList.toggle("is-open");
+      b.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    document.addEventListener("click", function (e) {
+      if (!b.parentNode.contains(e.target)) { b.parentNode.classList.remove("is-open"); b.setAttribute("aria-expanded", "false"); }
+    });
+  });
+
+  /* ---------- 4d. Ролики в галерее играют, только когда видны ---------- */
+  var vids = $$(".clip video");
+  if (vids.length && "IntersectionObserver" in window) {
+    var vio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting && !reduced) { v.preload = "auto"; var pr = v.play(); pr && pr.catch && pr.catch(function () {}); }
+        else v.pause();
+      });
+    }, { rootMargin: "120px 0px", threshold: 0.15 });
+    vids.forEach(function (v) { vio.observe(v); });
+  }
+  var heroV = $(".ai-hero2__bg");
+  if (heroV && reduced) { heroV.removeAttribute("autoplay"); heroV.pause(); }
+
   /* ---------- 5. Вопросы ---------- */
   var FAQ = [
     ["Сколько времени занимает сайт?", "Лендинг 5-7 дней, сайт с приложением 10-14 дней, проект с 3D до трёх недель. Отсчёт идёт с момента, когда вы прислали тексты и фото. Если материалов нет, помогаю их собрать, это добавляет пару дней."],
@@ -714,9 +753,10 @@
   }
 
   /* ---------- 7. Плавная прокрутка по якорям ---------- */
-  $$('a[href^="#"]').forEach(function (a) {
+  $$('a[href^="#"], a[href^="/#"]').forEach(function (a) {
     a.addEventListener("click", function (e) {
-      var id = a.getAttribute("href");
+      var id = a.getAttribute("href").replace(/^\//, "");
+      if (a.getAttribute("href").charAt(0) === "/" && location.pathname !== "/" && location.pathname !== "/index.html") return;
       if (id.length < 2) return;
       var t = document.querySelector(id);
       if (!t) return;
