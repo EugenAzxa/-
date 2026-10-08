@@ -55,7 +55,7 @@
   var LAYERS = [
     { key:"face",  w:992, h:1712, hw:0.920, hy:0.001, hx:0.526 },
     { key:"torso", w:863, h:1500, hw:0.300, hy:0.003, hx:0.500 },
-    { key:"full",  w:710, h:1500, hw:0.115, hy:0.000, hx:0.512 }
+    { key:"full",  w:521, h:1500, hw:0.284, hy:0.003, hx:0.530 }
   ];
 
   var stage = $("#hero");
@@ -239,7 +239,7 @@
 
   /* ---------- 3. Бегущая строка ---------- */
   var TICK = ["Лендинги", "Интернет-магазины", "Веб-приложения", "Личные кабинеты", "3D и WebGL",
-              "Telegram-боты", "Анимации по прокрутке", "Домен и хостинг", "Поддержка сайтов"];
+              "Telegram-боты", "Анимации по прокрутке", "SEO", "AI SEO для нейросетей", "Домен и хостинг", "Поддержка сайтов"];
   var ticker = $("#ticker");
   if (ticker) {
     var html = TICK.map(function (t) { return "<span>" + t + "</span>"; }).join("");
@@ -432,14 +432,14 @@
   /* ---------- 4a. Фильм по прокрутке: камера через нос в голову, сайты выходят из уха ---------- */
   /* 301 кадр (20 секунд, 15 кадров в секунду). Цвет края каждого кадра, чтобы фон секции совпадал с роликом */
   var FILM_N = 301;
-  var FILM_COLS = "bab0a1bcb1a2bcb1a2bbb1a2bbb1a2bab0a1b9afa0b8aea0b7ad9fb6ac9eb5ac9db5ab9db5ab9db5ab9cb5aa9cb5aa9cb5aa9bb5aa9bb5aa9bb7ab9cb8ad9dbbae9ebbaf9ebcaf9fbfb1a0c0b2a1c3b4a2c3b4a2c3b2a0c1af9dc0ae9bbca896b7a391af9b88b29b88b49c88b89e89ba9f8ab89b86ab8d78a4816c94685294665091614c8b5e4a895d4a8158467f57457e5644805745825a46865c48875c498b604b8c634f8c63516e4d3f57372b45251a46221a4e251e52272051261f5a2a206531266c36297a40327f4335854739894a3c8b4b3c8e4d3e8f4d3e924f3e94503f94503f9853419a54429c55429d56439e5643a05744a05744a15845a25845a35946a55a46a55a47a85c48ab5e4aae604bb7664fbb6a52c8755bd48263d88666d58564cf8062c0785b9b5d4c875146593439462632361e3627143d261341251344231143210f402411442210422c174f321a562714492513411a0d33150a2b150a2a190d2e1c0e311d0f3220113621123722133924143b25143b26153c26153c26153d27163e28163e28163f28163f28173f2917412a17412b18422b18422b18422c19432d19442e1a452e1a452f1b46301c47311c48321d48331e49341e4a351f4b36204b39224d39224d3a234d3b244f3b244f3d25503f26514329523f2752402753422854432955442a56462c58472c58482d5a4a2e5b4d315e5033615033614f31604f315f4d305a492d4f4a2e4e5335515738525a3c535a3c535f4155664958714f597f595a875853794b4855333c482a392c172c22132a1c1029231d2d2d2733443e425c5557686060837b77908782a69c95b6aba3bab0a6beb4aabfb4abc0b6acc1b7adc1b7adc2b7adc1b8aec2b9aec2b9aec3b9aec3b9afc3b9afc3baafc4baafc4baafc3baafc3baafc3baafc3baafc3baaec2b9aec2b9aec2b9aec2b9aec2b9aec2b9aec2b9afc3bab0c5bbb2c6bbb3c6bcb2c6bcb2c7bcb3c6bab2c6bbb2c6bab1c6bbb1c6bab0c3b8afc2b7aec1b5adc0b4acbeb2aabdb2a9beb2a9c1b5abc2b6acc3b7acc5baaec6baaec4b8acc3b8acc3b8acc5b9adc5baadc9bdb0cabeb1cbbeb1c8bbafc7baaec7baafc7baafcabdb0ccbfb0cbbfb0c9bdaec8bcadc8bcadc8bcacc8bcacc8bbacc7bbabc7bbabc7bbabc7bbabc8bcacc9bcacccbfafd3c6b4d6c9b8dbcdbbdccebcddcfbdded0bedfd1bfe1d2c0e3d3c1e5d5c3e7d7c4e7d7c4e7d7c4e7d7c4e7d7c4e7d6c4e6d6c3e6d6c3e6d5c3e5d5c2e5d5c2e5d5c2";
+  var FILM_COLS = "bab0a1bdb2a3bdb2a3bdb2a2bcb2a2bcb1a2bcb1a2bbb0a1bab0a1b9afa0b9aea0b8ae9fb7ad9eb7ad9eb7ac9db7ac9db7ac9db7ac9db8ac9db9ad9db9ad9dbaad9dbaae9dbcaf9fc0b3a2c3b5a4c8b9a7cabaa8cbbba9cabaa8c9b9a7c7b7a5c6b5a3c4b3a1bfad9bbdab99bdaa98baa794ad9a88a89381a58f7d9e816c9b7d69967864957662967662a07e69a6836eae8a74b59079b79079b58d75b38c74b48d75b38970b7896fc28e70c69273cc9676ce9777ce9878ce9877cd9777ca9474c58f6fc28c6dbb8668b88365b47f62b27d61b17c60b07b5fb07b5eaf7a5daf795daf795dae785cad775bac765aab7559ab7458a97357a97357a87256a67054a56f54a46e53a46e52a36d52a26c52a26c51a06c529e6b529a684f93624b8e5e488455417e513e734b386b46356947366a4a3a6a4c3c6d503f5b403050352455362160402965452e5e3d2b5c392b562f33572a43622b687837948a45adbd6de1d681eedf8eedc875dcb160ce7d3da467308f421b6528113f1d0c30160d23190f251e122b21142f22153024163324173525173627173927183928183a29183c2a193d2b1a3e2b1a3e2d1b402d1b412f1c42301d44311e44321e46331f47341f4836204936214a39224c3b234c3c254d3d254d3e264e3e264f3e264f3e274f4027503f2751402851402852412952412953412953422a54432b55452d58482f5b49305c4b325f4b316049305e462e59432c553d284d3c274b3b26493b26493c2749442e4e452f4f4730524b36564730525a416170547085647d8e698792738d5d436756406253435f6356696f6371847b7e8f8687a19894ada39eb2a8a1b8aea6bab0a8bcb2a9bdb3aabeb4abbeb4abbfb4abbfb5acc0b6acc0b6adc0b6adc0b6adc0b7adc1b7adc1b7adc1b7adc1b7adc1b8adc1b8adc1b8adc1b8adc1b8adc1b8adc1b8adc1b8adc2b8adc2b8adc2b8adc3b9aec3b9afc3b9b0c3b9b0c1b7aec2b8afc3b8afc3b9afc2b7aebdb2abbbb1a9bbb1a9bdb3abbfb4abc3b8afc2b6acc3b8aec2b7aec1b7aebbb0a7bbb0a8beb3aac5baafc4b9afc7bcb1c6bab0c7bbb0c6bbafc9beb1c7bcafc6bbafc7bcafc7bcafc7bbadc6baacc7bbacc8bcadcabeaecbbeaecbbfafccbfb0ccbfb0cdc1b1cfc2b2d2c5b4d5c7b7d7c9b8dacbbadbcdbbdecfbee1d1c0e2d2c0e4d3c1e4d3c1e5d4c1e5d4c1e5d4c2e5d4c1e5d4c1e4d4c1e4d3c1e4d3c1e4d3c1e4d3c1e4d3c1e3d3c1e3d3c1e2d2c0e2d2c0e2d2c0e2d2c0e2d2c0";
   var film = $("#ideya");
   if (film) (function () {
     var cv = $("#filmCanvas"), ctx = cv && cv.getContext("2d");
     var bar = $("#filmBar"), caps = $$(".film__cap", film);
     if (reduced || !ctx) { film.classList.add("film--static"); return; }
 
-    var small = window.innerWidth < 700;
+    var small = window.innerWidth < 700;   /* телефон: кадры 1280px, компьютер: 1600px */
     var dir = "assets/film/" + (small ? "m" : "d") + "/";
     var frames = new Array(FILM_N), got = 0, started = false;
     var cur = 0, want = 0, drawn = -1, cw = 0, chh = 0;
@@ -490,24 +490,51 @@
       for (var k = i; k >= 0 && k < FILM_N; k += step) if (frames[k]) return k;
       return -1;
     }
+    /* кадр на экране. На широком экране как object-fit: cover.
+       На вертикальном (телефон) кадр крупный, но не уже 42% ширины ролика, края растворяются в фоне,
+       а к финалу камера отъезжает, чтобы были видны и Александр, и сайты */
+    var box = { x: 0, y: 0, w: 0, h: 0 };
+    function place(iw, ih, z) {
+      var cover = Math.max(cw / iw, chh / ih), fit = Math.min(cw / iw, chh / ih);
+      var s = cover, cy = 0.5;
+      if (cw / chh < 1.3) { s = Math.min(cover, cw / (iw * 0.42)); cy = 0.42; s = s * Math.pow(fit / s, z); }
+      var w = iw * s, h = ih * s, y = h >= chh ? (chh - h) / 2 : clamp(chh * cy - h / 2, 0, chh - h);
+      box.x = (cw - w) / 2; box.y = y; box.w = w; box.h = h;
+    }
     function paint(im, a) {
-      var iw = im.naturalWidth, ih = im.naturalHeight;
-      var s = Math.max(cw / iw, chh / ih), w = iw * s, h = ih * s;   /* как object-fit: cover */
       ctx.globalAlpha = a;
-      ctx.drawImage(im, (cw - w) / 2, (chh - h) / 2, w, h);
+      ctx.drawImage(im, box.x, box.y, box.w, box.h);
+    }
+    function edges(hex) {
+      if (box.h >= chh - 1) return;
+      var f = Math.min(box.h * 0.16, 90 * (cw / cv.clientWidth || 1));
+      var r = parseInt(hex.substr(0, 2), 16), g = parseInt(hex.substr(2, 2), 16), b = parseInt(hex.substr(4, 2), 16);
+      var c0 = "rgba(" + r + "," + g + "," + b + ",1)", c1 = "rgba(" + r + "," + g + "," + b + ",0)";
+      var gr = ctx.createLinearGradient(0, box.y, 0, box.y + f);
+      gr.addColorStop(0, c0); gr.addColorStop(1, c1);
+      ctx.fillStyle = gr; ctx.fillRect(0, box.y - 1, cw, f + 1);
+      gr = ctx.createLinearGradient(0, box.y + box.h - f, 0, box.y + box.h);
+      gr.addColorStop(0, c1); gr.addColorStop(1, c0);
+      ctx.fillStyle = gr; ctx.fillRect(0, box.y + box.h - f, cw, f + 1);
     }
     function render() {
       var i = Math.floor(cur), f = cur - i;
       var lo = near(i, -1), hi = near(Math.min(i + 1, FILM_N - 1), 1);
       if (lo < 0) lo = hi;
       if (lo < 0) return;
-      var key = lo * 1000 + (hi === lo + 1 ? Math.round(f * 20) : 0);
+      var key = lo * 1000 + (hi === lo + 1 ? Math.round(f * 20) : 0) + cw * 1e7;
       if (key === drawn) return;
       drawn = key;
+      var c = FILM_COLS.substr(lo * 6, 6);
+      var z = range(cur / (FILM_N - 1), 0.8, 0.96); z = z * z * (3 - 2 * z);
+      place(frames[lo].naturalWidth, frames[lo].naturalHeight, z);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#" + c;
+      ctx.fillRect(0, 0, cw, chh);
       paint(frames[lo], 1);
       if (hi === lo + 1 && f > 0.02) paint(frames[hi], f);   /* мягкая склейка соседних кадров */
       ctx.globalAlpha = 1;
-      var c = FILM_COLS.substr(lo * 6, 6);
+      edges(c);
       film.style.setProperty("--fbg", "#" + c);
       var r = parseInt(c.substr(0, 2), 16), g = parseInt(c.substr(2, 2), 16), b = parseInt(c.substr(4, 2), 16);
       film.classList.toggle("is-dark", (0.299 * r + 0.587 * g + 0.114 * b) < 120);
