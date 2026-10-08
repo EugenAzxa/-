@@ -12,6 +12,10 @@ assets/css/style.css  стили и адаптив
 assets/js/main.js     анимация прокрутки, примеры ниш, вопросы и ответы
 assets/img/*.webp     фотографии с убранным фоном
 assets/img/seo/       скриншоты для страницы SEO
+blog/                 блог (собирается скриптом, руками не править)
+_blog/*.md            тексты статей блога, BRIEF.md - правила для новых статей
+_tools/build_blog.py  сборка блога, блока «Из блога» на главной, sitemap.xml, robots.txt, llms.txt
+_tools/dev.js         локальный сервер с чистыми адресами как на Vercel
 assets/film/d2, m2    кадры ролика по прокрутке (d - компьютер 1600px, m - телефон 1280px), poster.webp - последний кадр
 ```
 
@@ -33,10 +37,17 @@ assets/film/d2, m2    кадры ролика по прокрутке (d - ко�
 
 ```bash
 cd rabota-ne-volk
-python3 -m http.server 8123
+node _tools/dev.js
 ```
 
-Дальше открыть http://localhost:8123
+Дальше открыть http://localhost:8123 (адреса чистые, как на Vercel: /seo, /blog, /blog/<статья>)
+
+## Блог
+
+Новая статья: файл `_blog/<адрес-латиницей>.md` с шапкой (slug, title, description, tag), правила в `_blog/BRIEF.md`.
+Затем `python3 _tools/build_blog.py` - он соберёт страницу статьи, список в /blog, три карточки на главной
+(между маркерами `BLOG:START` и `BLOG:END` в index.html), обновит sitemap.xml, robots.txt и llms.txt.
+Адрес сайта для canonical и карты сайта - константа `SITE` в начале скрипта, поменять при переезде на свой домен.
 
 ## Как опубликовать
 
