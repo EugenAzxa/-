@@ -702,6 +702,69 @@
   var heroV = $(".ai-hero2__bg");
   if (heroV && reduced) { heroV.removeAttribute("autoplay"); heroV.pause(); }
 
+  /* кнопка «Со звуком»: звук только у одного ролика, ролик начинается сначала */
+  $$("[data-sound]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var v = $("video", b.parentNode), on = v.muted;
+      $$("[data-sound]").forEach(function (o) {
+        var ov = $("video", o.parentNode);
+        ov.muted = true; o.setAttribute("aria-pressed", "false"); $("span", o).textContent = "Со звуком";
+      });
+      if (on) {
+        v.muted = false; v.currentTime = 0;
+        var pr = v.play(); pr && pr.catch && pr.catch(function () {});
+        b.setAttribute("aria-pressed", "true"); $("span", b).textContent = "Без звука";
+      }
+    });
+  });
+
+  /* ---------- 4e. Демо AI-бота: заготовленные ответы вымышленного барбершопа ---------- */
+  var bot = $("#botDemo");
+  if (bot) (function () {
+    var log = $(".botdemo__log", bot), chips = $(".botdemo__chips", bot);
+    var Q = {
+      price: { q: "Сколько стоит стрижка?", a: "Мужская стрижка 1 500 ₽, стрижка и борода 2 300 ₽, детская до 12 лет 1 000 ₽. Не знаете, что выбрать? Опишите, что хотите, подскажу.", next: ["sat", "where"] },
+      sat: { q: "Есть время в субботу?", a: "В субботу свободно: 11:00 и 15:30 у Артёма, 13:00 у Ильи. Записать вас?", next: ["book", "price"] },
+      book: { q: "Запишите на 15:30", a: "Готово, предварительно записал вас на субботу, 15:30, мастер Артём. Администратор перезвонит в течение 15 минут и подтвердит запись.", next: ["where", "human"] },
+      where: { q: "Где вы находитесь?", a: "Ул. Ленина, 12, вход со двора, две минуты от остановки «Рынок». Парковка у входа бесплатная.", next: ["sat", "human"] },
+      human: { q: "Хочу поговорить с человеком", a: "Передал ваш вопрос администратору, он ответит здесь же в течение 10 минут. Мы работаем с 10:00 до 21:00.", next: ["price", "restart"] },
+      restart: { q: "Начать сначала" }
+    };
+    function msg(t, me) {
+      var el = document.createElement("div");
+      el.className = "botdemo__msg" + (me ? " botdemo__msg--u" : "");
+      el.textContent = t;
+      log.appendChild(el);
+      log.scrollTop = log.scrollHeight;
+      return el;
+    }
+    function offer(keys) {
+      chips.innerHTML = "";
+      keys.forEach(function (k) {
+        var b = document.createElement("button");
+        b.type = "button"; b.textContent = Q[k].q;
+        b.addEventListener("click", function () { ask(k); });
+        chips.appendChild(b);
+      });
+    }
+    function ask(k) {
+      if (k === "restart") return start();
+      $$("button", chips).forEach(function (b) { b.disabled = true; });
+      msg(Q[k].q, true);
+      var typing = document.createElement("div");
+      typing.className = "botdemo__msg botdemo__typing";
+      typing.innerHTML = "<i></i><i></i><i></i>";
+      setTimeout(function () { log.appendChild(typing); log.scrollTop = log.scrollHeight; }, 250);
+      setTimeout(function () { typing.remove(); msg(Q[k].a); offer(Q[k].next); }, reduced ? 300 : 1100 + Math.min(900, Q[k].a.length * 6));
+    }
+    function start() {
+      log.innerHTML = "";
+      msg("Здравствуйте! Я AI-помощник барбершопа «БРИТВА». Подскажу цены, свободное время и как нас найти.");
+      offer(["price", "sat", "where", "human"]);
+    }
+    start();
+  })();
+
   /* ---------- 5. Вопросы ---------- */
   var FAQ = [
     ["Сколько времени занимает сайт?", "Лендинг 5-7 дней, сайт с приложением 10-14 дней, проект с 3D до трёх недель. Отсчёт идёт с момента, когда вы прислали тексты и фото. Если материалов нет, помогаю их собрать, это добавляет пару дней."],

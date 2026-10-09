@@ -158,7 +158,8 @@ def head(title, desc, url, og_type="website", extra=""):
 
 
 NAV_ITEMS = [("tarify", "/#tarify", "Тарифы"), ("raschet", "/#raschet", "Расчёт")]
-SERVICES = [("seo", "/seo", "SEO и AI-поиск"), ("pres", "/prezentacii", "Презентации"), ("ai", "/ai-video", "AI-видео")]
+SERVICES = [("seo", "/seo", "SEO и AI-поиск"), ("boty", "/ai-boty", "AI-боты"), ("ava", "/ai-avatary", "AI-аватары"),
+            ("ai", "/ai-video", "AI-видео"), ("pres", "/prezentacii", "Презентации")]
 
 
 def nav(cur="", stuck=True):
@@ -421,8 +422,8 @@ b.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)re
         wr(fp, t)
 
     # sitemap, robots, llms
-    urls = [(SITE + "/", "1.0"), (SITE + "/seo", "0.8"), (SITE + "/prezentacii", "0.8"), (SITE + "/ai-video", "0.8"),
-            (SITE + "/blog", "0.8")] + \
+    urls = [(SITE + "/", "1.0"), (SITE + "/seo", "0.8")] + [(SITE + "/" + pg["slug"], "0.8") for pg in pages.PAGES] + \
+           [(SITE + "/blog", "0.8")] + \
            [("%s/blog/%s" % (SITE, p["slug"]), "0.6") for p in posts]
     today = datetime.date.today().isoformat()
     sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + \
@@ -475,6 +476,8 @@ Sitemap: %s/sitemap.xml
 - Сайт высшего уровня (3D, анимации по прокрутке, SEO под Яндекс и Google, AI SEO под ChatGPT, Gemini, Claude, DeepSeek и Алису): 50 000 - 60 000 рублей, срок 14-21 день, поддержка 4 000 рублей в месяц. Первые клиенты из поиска и нейросетей без оплаты рекламы обычно приходят в течение двух месяцев.
 - Презентации любой сложности (питч-деки, коммерческие предложения, отчёты, каталоги, выступления, AI-иллюстрации): цена по договорённости.
 - AI-видео любой сложности (реклама, анимация логотипа, оживление фото, исторические сцены, вертикальные ролики, видео для сайта): цена по договорённости.
+- AI-боты (чат-боты на нейросетях для сайта, Telegram, VK и WhatsApp: ответы на вопросы, запись, расчёт стоимости, передача заявок менеджеру, данные по 152-ФЗ): цена по договорённости.
+- AI-аватары (цифровой ведущий, UGC-реклама, персонаж бренда, цифровой двойник с письменного согласия, перевод с движением губ): цена по договорённости.
 - Домен оформляется на клиента, хостинг и домен клиент оплачивает напрямую провайдеру.
 
 ## Контакты
@@ -486,6 +489,8 @@ Sitemap: %s/sitemap.xml
 - [SEO и AI-поиск: живые цифры проекта](%(site)s/seo)
 - [Презентации любой сложности](%(site)s/prezentacii)
 - [AI-видео любой сложности](%(site)s/ai-video)
+- [AI-боты для бизнеса](%(site)s/ai-boty)
+- [AI-аватары](%(site)s/ai-avatary)
 - [Блог](%(site)s/blog)
 
 ## Статьи блога

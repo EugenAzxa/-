@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Страницы услуг: презентации и AI-видео. Собираются из build_blog.py."""
+"""Страницы услуг: презентации, AI-видео, AI-боты и AI-аватары. Собираются из build_blog.py."""
 
 TEL = "+79919149854"
 PHONE = "+7 991 914-98-54"
@@ -34,11 +34,13 @@ def slide(src, alt, cap, wide=False):
 </figure>""" % (" slide--wide" if wide else "", src, src, alt, cap)
 
 
-def clip(name, cap, tag, shape="h"):
+def clip(name, cap, tag, shape="h", sound=False):
+    snd = """
+  <button class="clip__snd" type="button" data-sound aria-pressed="false"><svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg><span>Со звуком</span></button>""" if sound else ""
     return """<figure class="clip clip--%s reveal">
-  <video src="/assets/work/ai/%s.mp4" poster="/assets/work/ai/%s.jpg" muted loop playsinline preload="none" aria-label="%s"></video>
+  <video src="/assets/work/ai/%s.mp4" poster="/assets/work/ai/%s.jpg" muted loop playsinline preload="none" aria-label="%s"></video>%s
   <figcaption><span>%s</span>%s</figcaption>
-</figure>""" % (shape, name, name, cap, tag, cap)
+</figure>""" % (shape, name, name, cap, snd, tag, cap)
 
 
 PRES = {
@@ -272,4 +274,215 @@ AI["body"] = AI["body"] % dict(
         clip("car-build", "Машина собирается", "Эффект", "v"),
     ]))
 
-PAGES = [PRES, AI]
+
+
+# ---------- AI-боты и AI-аватары ----------
+ICO = {
+    "chat": '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    "cal": '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    "calc": '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h8"/>',
+    "user": '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>',
+    "grid": '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+    "book": '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+    "mic": '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>',
+    "phone": '<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',
+    "star": '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+    "copy": '<circle cx="9" cy="8" r="4"/><path d="M3 21v-1a6 6 0 0 1 6-6"/><circle cx="17" cy="12" r="3"/><path d="M13 21v-.5a4 4 0 0 1 8 0v.5"/>',
+    "globe": '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+    "screen": '<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
+}
+
+
+def card(ico, h, t):
+    return '      <article class="seo-card reveal"><svg viewBox="0 0 24 24" class="ico" aria-hidden="true">%s</svg><h3>%s</h3><p>%s</p></article>' % (ICO[ico], h, t)
+
+
+BACK = """      <a class="seo-back" href="/">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M19 12H5"/><path d="m11 18-6-6 6-6"/></svg>
+        На главную
+      </a>"""
+
+BOTS = {
+    "slug": "ai-boty",
+    "title": "AI-боты для бизнеса: сайт, Telegram, VK, WhatsApp - Александр",
+    "desc": "Чат-боты на нейросетях: отвечают клиентам круглосуточно, записывают на услугу, считают стоимость и передают заявки менеджеру. Сайт, Telegram, VK, WhatsApp. Цена по договорённости.",
+    "nav": "boty",
+    "body": """
+<section class="seo-hero">
+  <div class="wrap svc-split">
+    <div>
+%(back)s
+      <p class="eyebrow"><span class="dot"></span> AI-боты</p>
+      <h1 class="seo-h1">AI-боты, которые<br>отвечают за вас</h1>
+      <p class="seo-lead">Бот на нейросети отвечает клиентам на сайте и в мессенджерах круглосуточно: подсказывает цены, записывает, считает стоимость и передаёт заявку вам. Говорит живым языком, а не кнопками «нажмите 1».</p>
+      <div class="svc-price">
+        <b>Цена по договорённости</b>
+        <span>Зависит от площадок, объёма базы знаний и интеграций. Назову после короткого звонка.</span>
+      </div>
+      <div class="hero__cta svc-cta">
+        <a class="btn btn--lg" href="tel:+79919149854">Обсудить бота</a>
+        <a class="btn btn--ghost btn--lg" href="#chto">Что он умеет</a>
+      </div>
+    </div>
+    <div class="botdemo reveal" id="botDemo">
+      <div class="botdemo__head">
+        <span class="botdemo__ava" aria-hidden="true">Б</span>
+        <span class="botdemo__who"><b>БРИТВА, барбершоп</b><i>AI-помощник, онлайн</i></span>
+        <em>Демо</em>
+      </div>
+      <div class="botdemo__log" aria-live="polite"></div>
+      <div class="botdemo__chips"></div>
+      <p class="botdemo__note">Вымышленный барбершоп, ответы заготовлены для примера. Настоящий бот отвечает своими словами по вашим ценам и правилам.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint" id="chto">
+  <div class="wrap">
+    <header class="shead reveal">
+      <p class="eyebrow">Что умеет</p>
+      <h2 class="h2">Менеджер, который<br>не спит и не забывает</h2>
+      <p class="shead__note">Обучаю бота на вашем прайсе, частых вопросах и правилах. Он отвечает только по ним, а если не знает ответа, честно говорит об этом и зовёт человека.</p>
+    </header>
+    <div class="seo-grid">
+%(cards)s
+    </div>
+  </div>
+</section>
+
+<section class="section" id="kak">
+  <div class="wrap wrap--narrow">
+    <header class="shead reveal">
+      <p class="eyebrow">Как работаем</p>
+      <h2 class="h2">От списка вопросов<br>до бота в работе</h2>
+    </header>
+    <dl class="gloss reveal">
+      <div><dt>Разбор</dt><dd>Собираем вопросы, которые клиенты задают чаще всего, прайс, условия и то, о чём бот говорить не должен.</dd></div>
+      <div><dt>База знаний</dt><dd>Загружаю ваши документы и ответы. Бот опирается только на них, поэтому не обещает того, чего у вас нет.</dd></div>
+      <div><dt>Сценарии</dt><dd>Когда записывать, когда считать цену, когда звать менеджера и куда отправлять заявку.</dd></div>
+      <div><dt>Запуск</dt><dd>Подключаю к сайту и мессенджерам, проверяем на настоящих вопросах, правим ответы.</dd></div>
+      <div><dt>Сопровождение</dt><dd>Смотрю переписки и дописываю ответы на новые вопросы. Работа нейросети оплачивается отдельно по факту, расход заранее считаю под ваш поток обращений.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section section--tint" id="zakon">
+  <div class="wrap wrap--narrow">
+    <header class="shead reveal">
+      <p class="eyebrow">Данные и закон</p>
+      <h2 class="h2">Бот собирает телефоны,<br>значит, нужен порядок</h2>
+    </header>
+    <dl class="gloss reveal">
+      <div><dt>152-ФЗ</dt><dd>Если бот спрашивает имя и телефон, нужны политика обработки данных и согласие клиента. Готовлю их вместе с ботом.</dd></div>
+      <div><dt>Хранение в России</dt><dd>Данные клиентов из России хранятся на серверах в России. Под это подбираю модель и хостинг, например YandexGPT или GigaChat.</dd></div>
+      <div><dt>Честность</dt><dd>Бот не притворяется человеком и не обещает скидок и сроков, которых нет в вашей базе знаний.</dd></div>
+    </dl>
+  </div>
+</section>
+""" % dict(back=BACK, cards="\n".join([
+        card("chat", "Отвечает на вопросы", "Цены, сроки, адрес, условия, гарантия. Отвечает по вашему прайсу и документам, а не придумывает. Ночью и в выходные тоже."),
+        card("cal", "Записывает и принимает заявки", "Спрашивает имя, телефон и удобное время, отправляет заявку вам в Telegram, CRM или таблицу. Клиент не ждёт утра."),
+        card("calc", "Считает стоимость", "Калькулятор прямо в переписке: площадь, количество, опции. Клиент сразу видит цену и не уходит к конкурентам."),
+        card("user", "Зовёт человека", "Если вопрос сложный или клиент просит живого человека, бот передаёт переписку менеджеру, и тот продолжает с того же места."),
+        card("grid", "Там, где ваши клиенты", "Окно чата на сайте, Telegram, VK, WhatsApp. Один бот и одна база знаний для всех площадок."),
+        card("book", "Помощник для сотрудников", "Отвечает по внутренним инструкциям и регламентам. Новички не дёргают старших по каждому вопросу."),
+    ])),
+    "contact": ("Расскажите, на какие вопросы<br>должен отвечать бот", "Цена зависит от площадок, объёма базы знаний и интеграций. Назову её после короткого звонка. Пришлите в WhatsApp список частых вопросов клиентов, это ускорит работу."),
+}
+
+AVA = {
+    "slug": "ai-avatary",
+    "title": "AI-аватары: цифровой ведущий, персонаж бренда, UGC-ролики - Александр",
+    "desc": "AI-аватар говорит ваш текст на видео: ведущий для курсов и соцсетей, UGC-реклама, персонаж бренда, цифровой двойник с вашего согласия, перевод с движением губ. Цена по договорённости.",
+    "nav": "ava",
+    "body": """
+<section class="seo-hero">
+  <div class="wrap svc-split">
+    <div>
+%(back)s
+      <p class="eyebrow"><span class="dot"></span> AI-аватары</p>
+      <h1 class="seo-h1">AI-аватары,<br>которые говорят<br>за ваш бренд</h1>
+      <p class="seo-lead">Ведущий, персонаж или ваш цифровой двойник произносит любой текст на видео. Без студии, актёров и пересъёмок: поменяли текст, получили новый ролик.</p>
+      <div class="svc-price">
+        <b>Цена по договорённости</b>
+        <span>Зависит от количества роликов, их длины и того, нужен ли свой персонаж или двойник. Назову после короткого звонка.</span>
+      </div>
+      <div class="hero__cta svc-cta">
+        <a class="btn btn--lg" href="tel:+79919149854">Обсудить аватара</a>
+        <a class="btn btn--ghost btn--lg" href="#raboty">Смотреть работы</a>
+      </div>
+    </div>
+    <div class="svc-split__media">
+%(hero)s
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark" id="raboty">
+  <div class="wrap">
+    <header class="shead reveal">
+      <p class="eyebrow">Работы</p>
+      <h2 class="h2">Аватар рекламирует<br>приложение</h2>
+      <p class="shead__note">UGC-ролики для приложения Saylavy: пожилой мужчина в кафе рассказывает, зачем ему приложение, и показывает экран. Ни актёра, ни съёмки. Говорит по-английски, сделать можно на любом языке.</p>
+    </header>
+    <div class="clips clips--pair">
+%(ugc)s
+    </div>
+
+    <h3 class="ai-sub reveal">Один персонаж во всех сценах</h3>
+    <p class="ai-subnote reveal">Лицо, одежда и характер сохраняются от кадра к кадру. Так собирается сериал, реклама с героем бренда или ведущий для канала.</p>
+    <div class="clips clips--v">
+%(hero5)s
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint" id="chto">
+  <div class="wrap">
+    <header class="shead reveal">
+      <p class="eyebrow">Что делаю</p>
+      <h2 class="h2">Какие бывают<br>AI-аватары</h2>
+    </header>
+    <div class="seo-grid">
+%(cards)s
+    </div>
+  </div>
+</section>
+
+<section class="section" id="kak">
+  <div class="wrap wrap--narrow">
+    <header class="shead reveal">
+      <p class="eyebrow">Как работаем</p>
+      <h2 class="h2">От образа<br>до готового ролика</h2>
+    </header>
+    <dl class="gloss reveal">
+      <div><dt>Образ</dt><dd>Придумываем внешность, одежду и место или берём ваши фото, если нужен двойник. Сначала показываю картинки, правки на этом шаге быстрые.</dd></div>
+      <div><dt>Голос</dt><dd>Подбираю голос под характер или делаю копию вашего по записи. Русский, английский и другие языки.</dd></div>
+      <div><dt>Сценарий</dt><dd>Пишу текст под площадку: первые секунды цепляют, дальше одна мысль и призыв.</dd></div>
+      <div><dt>Ролики</dt><dd>Генерирую несколько дублей, выбираю лучший, монтирую, добавляю субтитры и музыку. Отдаю в 9:16, 16:9 и 1:1.</dd></div>
+      <div><dt>Согласие</dt><dd>Лица и голоса реальных людей только с их письменного согласия. Знаменитостей и чужих людей не делаю.</dd></div>
+    </dl>
+  </div>
+</section>
+""" % dict(back=BACK,
+           hero=clip("hero-face", "Персонаж для роликов бренда", "AI-персонаж", "v"),
+           ugc="\n".join([clip("avatar-ugc-1", "Отзыв о приложении", "UGC", "v", True),
+                          clip("avatar-ugc-2", "Показывает экран", "UGC", "v", True)]),
+           hero5="\n".join([
+               clip("hero-back", "Город на закате", "Персонаж", "v"),
+               clip("hero-roof", "На крыше", "Персонаж", "v"),
+               clip("hero-street", "Погоня ночью", "Персонаж", "v"),
+               clip("hero-desk", "За работой", "Персонаж", "v"),
+           ]),
+           cards="\n".join([
+               card("mic", "Цифровой ведущий", "Читает ваш текст на камеру: уроки, инструкции, новости компании. Поменяли текст, получили новое видео без пересъёмки."),
+               card("phone", "UGC-реклама", "Ролик в стиле живого отзыва или обзора от лица аватара для Reels, Shorts и VK Клипов."),
+               card("star", "Персонаж бренда", "Свой герой с узнаваемым лицом и стилем, который появляется во всех роликах и постах компании."),
+               card("copy", "Цифровой двойник", "Ваше лицо и голос произносят новый текст. Делаю только по вашим фото и записи голоса и с вашего письменного согласия."),
+               card("globe", "Перевод с движением губ", "Ролик на другом языке: голос переведён, губы двигаются под новую речь."),
+               card("screen", "Аватар на сайте", "Ведущий на первом экране или в разделе о компании: встречает посетителя и коротко рассказывает, чем вы полезны."),
+           ])),
+    "contact": ("Опишите, кто и что<br>должен сказать на видео", "Цена зависит от количества роликов, их длины и того, нужен ли свой персонаж или ваш двойник. Назову после короткого звонка. Если есть пример ролика, который нравится, пришлите его в WhatsApp."),
+}
+
+PAGES = [PRES, AI, BOTS, AVA]
