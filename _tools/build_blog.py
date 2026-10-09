@@ -16,6 +16,9 @@ TEL = "+79919149854"
 DATE = "2026-10-08"          # дата публикации по умолчанию, можно задать в файле полем date:
 MONTHS = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа",
           "сентября", "октября", "ноября", "декабря"]
+# где работаем: для разметки schema.org, llms.txt и статей
+AREA = [{"@type": "City", "name": "Санкт-Петербург"}, {"@type": "AdministrativeArea", "name": "Ленинградская область"},
+        {"@type": "Country", "name": "Россия"}]
 TAG_ORDER = ["Цены", "Разработка", "SEO", "AI SEO", "AI-боты", "AI-аватары", "Презентации", "AI-видео", "Запуск", "Ниши"]
 
 
@@ -197,7 +200,7 @@ def tail():
     return """<footer class="foot">
   <div class="wrap foot__in">
     <span class="foot__mark">Александр</span>
-    <span class="foot__mid">Разработка сайтов под ключ</span>
+    <span class="foot__mid">Разработка сайтов под ключ, Санкт-Петербург и вся Россия</span>
     <a class="foot__tel" href="tel:%(tel)s">%(ph)s</a>
   </div>
 </footer>
@@ -292,6 +295,7 @@ def main():
             "keywords": ", ".join(a["hashtags"]), "articleSection": a["tag"],
             "author": {"@type": "Person", "name": "Александр", "url": SITE + "/"},
             "publisher": {"@type": "Organization", "name": "Александр, разработка сайтов", "url": SITE + "/",
+                          "areaServed": AREA,
                           "logo": {"@type": "ImageObject", "url": SITE + "/assets/img/og.jpg"}},
             "image": SITE + "/assets/img/og.jpg"
         }, {
@@ -413,6 +417,7 @@ b.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)re
 </section>
 <!-- BLOG:END -->""" % "\n".join(card(p) for p in pick_home(posts))
     s = re.sub(r"<!-- BLOG:START.*?<!-- BLOG:END -->", lambda m: block, s, flags=re.S)
+    s = re.sub(r"<!-- LD:START.*?<!-- LD:END -->", lambda m: home_ld(), s, flags=re.S)
     wr(ip, s)
 
     for fn, cur in (("index.html", ""), ("seo.html", "seo")):
@@ -481,6 +486,11 @@ Sitemap: %s/sitemap.xml
 - AI-аватары (цифровой ведущий, UGC-реклама, персонаж бренда, цифровой двойник с письменного согласия, перевод с движением губ): цена по договорённости.
 - Домен оформляется на клиента, хостинг и домен клиент оплачивает напрямую провайдеру.
 
+## География
+- Санкт-Петербург и Ленинградская область, а также любой город России удалённо: от Калининграда до Владивостока.
+- Обсуждение по телефону и в мессенджерах, готовый сайт показывается по ссылке, личная встреча не обязательна.
+- Для продвижения сайт настраивается под город клиента: регион в Яндекс Вебмастере, карточки на Яндекс Картах и в 2ГИС.
+
 ## Контакты
 - Телефон: %(ph)s. Если не дозвонились, напишите SMS на этот номер.
 - WhatsApp и Telegram по тому же номеру.
@@ -501,6 +511,27 @@ Sitemap: %s/sitemap.xml
     wr(os.path.join(ROOT, "llms.txt"), llms)
     print("статей:", len(posts), "| слов:", sum(p["words"] for p in posts))
     for p in posts: print("  %-40s %-10s %4d слов" % (p["slug"], p["tag"], p["words"]))
+
+
+def home_ld():
+    """Разметка главной: услуга с географией и вопросы из FAQ (их же показывает main.js)."""
+    js = rd(os.path.join(ROOT, "assets", "js", "main.js"))
+    faq = re.findall(r'^\s*\["(.+?)", "(.+?)"\],?$', re.search(r"var FAQ = \[(.*?)\n  \];", js, re.S).group(1), re.M)
+    svc = lambda n, d: {"@type": "Offer", "itemOffered": {"@type": "Service", "name": n, "description": d}}
+    data = {"@context": "https://schema.org", "@graph": [
+        {"@type": "ProfessionalService", "@id": SITE + "/#business", "name": "Александр, разработка сайтов",
+         "url": SITE + "/", "image": SITE + "/assets/img/og.jpg", "telephone": "+79919149854",
+         "founder": {"@type": "Person", "name": "Александр"},
+         "description": "Разработка сайтов под ключ для бизнеса в Санкт-Петербурге и по всей России: лендинги, сайты с веб-приложением, проекты с 3D, SEO и AI SEO, AI-боты и AI-аватары. Работаю удалённо с любым городом.",
+         "areaServed": AREA, "priceRange": "20000-60000 RUB", "currenciesAccepted": "RUB",
+         "knowsAbout": ["разработка сайтов", "лендинги", "веб-приложения", "3D на сайте", "SEO", "AI SEO", "AI-боты", "AI-аватары", "AI-видео", "презентации"],
+         "makesOffer": [svc("Лендинг", "20 000 - 30 000 рублей, 5-7 дней"), svc("Сайт и веб-приложение", "30 000 - 40 000 рублей, 10-14 дней"),
+                        svc("Сайт высшего уровня", "50 000 - 60 000 рублей, 14-21 день, 3D, SEO и AI SEO"),
+                        svc("AI-боты", "чат-боты для сайта, Telegram, VK и WhatsApp, цена по договорённости"),
+                        svc("AI-аватары", "цифровой ведущий, персонаж бренда, UGC-реклама, цена по договорённости")]},
+        {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faq]}]}
+    return '<!-- LD:START (собирается _tools/build_blog.py) -->\n<script type="application/ld+json">\n' + \
+        json.dumps(data, ensure_ascii=False) + "\n</script>\n<!-- LD:END -->"
 
 
 def pick_home(posts):
