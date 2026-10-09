@@ -6,7 +6,7 @@
    Когда клетки улеглись, снова видна обычная картинка.
    ========================================================= */
 (function () {
-  var imgs = [].slice.call(document.querySelectorAll(".contact__man, .still img, [data-displace]"));
+  var imgs = [].slice.call(document.querySelectorAll(".contact__man, .still img, .calc-side img, .more3__media img, .slide img, [data-displace]"));
   if (!imgs.length || !window.IntersectionObserver) return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   var probe = document.createElement("canvas").getContext("webgl");
@@ -51,6 +51,11 @@
     cv.style.cssText = "position:absolute;pointer-events:none;display:none;z-index:1";
     var cs = getComputedStyle(img);
     if (cs.filter && cs.filter !== "none") cv.style.filter = cs.filter;
+    var mask = cs.webkitMaskImage || cs.maskImage;
+    if (mask && mask !== "none") { cv.style.webkitMaskImage = mask; cv.style.maskImage = mask; }
+    /* координаты холста считаем от родителя картинки, поэтому он должен быть позиционирован */
+    if (getComputedStyle(img.parentNode).position === "static") img.parentNode.style.position = "relative";
+    this.link = !!img.closest("a");
     /* холст сразу после картинки: подписи поверх него остаются видны; координаты от того же offsetParent */
     img.parentNode.insertBefore(cv, img.nextSibling);
     var gl = this.gl = cv.getContext("webgl", { alpha: true, premultipliedAlpha: true, antialias: false });
@@ -102,6 +107,9 @@
       var s = Math.max(w / nw, h / nh), dw = nw * s, dh = nh * s;
       var p = (cs.objectPosition || "50% 50%").split(" ");
       ctx.drawImage(img, (w - dw) * pos(p[0], w - dw) * DPR, (h - dh) * pos(p[1] || "50%", h - dh) * DPR, dw * DPR, dh * DPR);
+    } else if (cs.objectFit === "contain") {
+      var s2 = Math.min(w / nw, h / nh), cw = nw * s2, ch = nh * s2;
+      ctx.drawImage(img, (w - cw) / 2 * DPR, (h - ch) / 2 * DPR, cw * DPR, ch * DPR);
     } else ctx.drawImage(img, 0, 0, c.width, c.height);
     var gl = this.gl;
     gl.activeTexture(gl.TEXTURE0);
@@ -145,6 +153,16 @@
     this.img.style.opacity = "";
     var cv = this.cv;
     requestAnimationFrame(function () { cv.style.display = "none"; });
+  };
+
+  Disp.prototype.burst = function (x, y) {
+    var cols = this.cols, rows = this.rows, gx = x * cols, gy = y * rows, R = cols * 0.5, f = this.field;
+    for (var j = 0; j < rows; j++) for (var i = 0; i < cols; i++) {
+      var dx = i - gx, dy = (j - gy) * this.rowScale, dd = Math.sqrt(dx * dx + dy * dy);
+      if (dd > R || dd < 0.001) continue;
+      var p = (1 - dd / R) * 34, idx = 2 * (i + cols * j);
+      f[idx] += dx / dd * p; f[idx + 1] += dy / dd * p;
+    }
   };
 
   Disp.prototype.scramble = function (amp) {
@@ -239,6 +257,16 @@
     }, { threshold: 0.35 });
     io.observe(img);
 
+    /* касание на телефоне: клетки разлетаются от пальца и собираются обратно */
+    img.parentNode.addEventListener("pointerdown", function (e) {
+      if (e.pointerType === "mouse" || d.dead || !d.field || d.link) return;   /* по ссылке касание и так уводит на страницу */
+      var r = img.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      if (x < 0 || x > 1 || y < 0 || y > 1) return;
+      d.burst(x, y);
+      d.start();
+    }, { passive: true });
+
     if (!fine) return;
     var area = img.parentNode, m = d.mouse;
     area.addEventListener("pointermove", function (e) {
@@ -251,7 +279,7 @@
       m.vx = x - m.px; m.vy = y - m.py;
       var dt = Math.max((now - m.t) / 1000, 0.001), dist = Math.hypot(m.vx * r.width, m.vy * r.height);
       m.speed += (dist / dt - m.speed) * Math.min(dt * 25, 1);
-      var g = Math.min(Math.max((m.speed - 500) / 500, 0), 1);
+      var g = Math.min(Math.max((m.speed - 150) / 350, 0), 1);
       m.gate = g * g * (3 - 2 * g);
       m.px = x; m.py = y; m.t = now; m.x = x; m.y = y;
       if (m.gate > 0 && d.field) d.start();

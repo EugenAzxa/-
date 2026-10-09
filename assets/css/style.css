@@ -1117,3 +1117,6 @@ main{counter-reset:sec}
 .photo__layer[data-layer="face"],.photo__layer[data-layer="torso"]{
   -webkit-mask-image:linear-gradient(to bottom,#000 70%,rgba(0,0,0,.6) 84%,transparent 99%);
           mask-image:linear-gradient(to bottom,#000 70%,rgba(0,0,0,.6) 84%,transparent 99%)}
+
+/* телефон: у контейнера пузырей нулевая высота, без этого подложки сплющивались и текст вылезал из них */
+@media (max-width:860px){ .ideas{height:auto;align-items:flex-start} }
