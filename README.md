@@ -47,12 +47,26 @@ node _tools/dev.js
 Новая статья: файл `_blog/<адрес-латиницей>.md` с шапкой (slug, title, description, tag), правила в `_blog/BRIEF.md`.
 Затем `python3 _tools/build_blog.py` - он соберёт страницу статьи, список в /blog, три карточки на главной
 (между маркерами `BLOG:START` и `BLOG:END` в index.html), обновит sitemap.xml, robots.txt и llms.txt.
-Адрес сайта для canonical и карты сайта - константа `SITE` в начале скрипта, поменять при переезде на свой домен.
+Адрес сайта для canonical и карты сайта - константа `SITE` в начале скрипта (сейчас работаневолк.рф в punycode).
 
 ## Как опубликовать
 
-Проще всего GitHub Pages: в настройках репозитория Settings - Pages - Branch: main, папка `/ (root)`.
-Файл `.nojekyll` уже лежит в корне, он нужен, чтобы Pages отдавал папку `assets` как есть.
+Всё выкладывается само после `git push` в ветку `main`:
+
+- **Vercel** (https://rabota-ne-volk.vercel.app) - через интеграцию Vercel с GitHub.
+- **REG.RU** (https://работаневолк.рф, папка `www/xn--80aacfo5agnheo1a.xn--p1ai/` на хостинге) - через GitHub Actions,
+  файл `.github/workflows/deploy-regru.yml`. Заливаются только изменённые файлы, служебные папки
+  (`_blog`, `_tools`, `_src`, `.github`, `.vercel`) не попадают на хостинг. Ход выкладки виден во вкладке Actions репозитория,
+  там же кнопка «Run workflow», чтобы перезалить вручную.
+
+Для REG.RU в репозитории должны быть секреты (Settings - Secrets and variables - Actions):
+`REGRU_FTP_SERVER`, `REGRU_FTP_USER`, `REGRU_FTP_PASSWORD` - данные из панели REG.RU, вкладка «Доступы».
+
+Порядок правки: поменять файлы, при правке статей или меню запустить `python3 _tools/build_blog.py`,
+посмотреть локально (`node _tools/dev.js`), затем `git commit` и `git push`.
+
+На хостинге REG.RU настройки сервера лежат в `.htaccess`: чистые адреса (/seo, /blog/slug), кеш картинок,
+запрет на служебные папки. Переадресация на https в нём закомментирована до выпуска SSL-сертификата.
 
 ## Фотографии
 

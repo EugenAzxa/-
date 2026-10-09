@@ -1,0 +1,56 @@
+# Выкладка на хостинг REG.RU (работаневолк.рф) после каждого push в main.
+# Vercel обновляется сам через свою интеграцию с GitHub, этот файл отвечает только за REG.RU.
+# Нужны секреты репозитория (Settings -> Secrets and variables -> Actions):
+#   REGRU_FTP_SERVER   - адрес FTP-сервера из панели REG.RU, вкладка «Доступы»
+#   REGRU_FTP_USER     - логин FTP
+#   REGRU_FTP_PASSWORD - пароль FTP
+# Заливаются только изменённые файлы: список уже загруженного хранится на сервере
+# в .ftp-deploy-sync-state.json (наружу его не отдаёт .htaccess).
+name: Выкладка на REG.RU
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: regru-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      HAS_FTP: ${{ secrets.REGRU_FTP_PASSWORD != '' }}
+    steps:
+      - name: Секреты FTP ещё не заданы, выкладку пропускаем
+        if: env.HAS_FTP != 'true'
+        run: echo "Добавьте REGRU_FTP_SERVER, REGRU_FTP_USER и REGRU_FTP_PASSWORD в секреты репозитория"
+
+      - uses: actions/checkout@v4
+        if: env.HAS_FTP == 'true'
+
+      - name: Залить сайт по FTP
+        if: env.HAS_FTP == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.REGRU_FTP_SERVER }}
+          username: ${{ secrets.REGRU_FTP_USER }}
+          password: ${{ secrets.REGRU_FTP_PASSWORD }}
+          # если REG.RU не примет шифрованное соединение, поменять на ftp
+          protocol: ftps
+          server-dir: www/xn--80aacfo5agnheo1a.xn--p1ai/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            _blog/**
+            _tools/**
+            _src/**
+            .vercel/**
+            vercel.json
+            .vercelignore
+            .nojekyll
+            README.md
+            **/.DS_Store

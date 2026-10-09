@@ -31,7 +31,9 @@ RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+?)/?$ $1.html [L]
 
 # служебные папки не отдаём
-RewriteRule ^(_blog|_tools|_src|\.git|\.vercel)(/|$) - [F,L]
+RewriteRule ^(_blog|_tools|_src|\.git|\.github|\.vercel)(/|$) - [F,L]
+# служебный файл автовыкладки
+RewriteRule ^\.ftp-deploy-sync-state\.json$ - [F,L]
 </IfModule>
 
 <IfModule mod_headers.c>
