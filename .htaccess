@@ -6,15 +6,15 @@ Options -Indexes -MultiViews
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
-# без www
+# без www и сразу на https
 RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-RewriteRule ^ http://%1%{REQUEST_URI} [L,R=301]
+RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
 
-# на https: включить (убрать # у двух строк ниже) только ПОСЛЕ того, как в панели REG.RU
-# выпущен SSL-сертификат и сайт открывается по https://. Перед Apache стоит nginx,
-# поэтому смотрим X-Forwarded-Proto, иначе будет бесконечная переадресация.
-# RewriteCond %{HTTP:X-Forwarded-Proto} !https
-# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# всё на https (SSL Let's Encrypt выпущен 2026-10-09). Перед Apache стоит nginx,
+# поэтому кроме HTTPS смотрим X-Forwarded-Proto, иначе возможна бесконечная переадресация.
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # /index.html -> /
 RewriteCond %{THE_REQUEST} \s/index\.html[\s?] [NC]
