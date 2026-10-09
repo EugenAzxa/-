@@ -208,6 +208,7 @@ def tail():
 </a>
 
 <script src="/assets/js/main.js"></script>
+<script src="/assets/js/displace.js"></script>
 </body>
 </html>
 """ % dict(tel=TEL, ph=PHONE, ico=ICO_PHONE)

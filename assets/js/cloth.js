@@ -146,7 +146,11 @@
       if (!m) return;
       var src = m[1].replace(/\\"/g, '"');
       var head = /^data:image\/svg\+xml;utf8,/;
-      if (head.test(src)) src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(src.replace(head, ""));
+      if (head.test(src)) {
+        var body = src.replace(head, "");
+        try { body = decodeURIComponent(body); } catch (e) {}
+        src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(body);
+      }
       var size = px(p.backgroundSize) || b.width;
       later.push(loadImg(src).then(function (im) {
         im && ctx.drawImage(im, b.left + (b.width - size) / 2, b.top + (b.height - size) / 2, size, size);
