@@ -32,4 +32,4 @@ Allow: /
 User-agent: YandexAdditional
 Allow: /
 
-Sitemap: https://rabota-ne-volk.vercel.app/sitemap.xml
+Sitemap: https://xn--80aacfo5agnheo1a.xn--p1ai/sitemap.xml

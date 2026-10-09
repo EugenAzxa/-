@@ -8,9 +8,9 @@ sitemap.xml, robots.txt, llms.txt.
 import io, os, re, glob, html, json, datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# адрес сайта для canonical, карты сайта и llms.txt. После переезда на работаневолк.рф:
-#   SITE_URL=https://xn--80aacfo5agnheo1a.xn--p1ai python3 _tools/build_blog.py   (или поменять значение ниже)
-SITE = os.environ.get("SITE_URL", "https://rabota-ne-volk.vercel.app")
+# адрес сайта для canonical, карты сайта и llms.txt (работаневолк.рф в punycode).
+# Vercel-копия тоже ссылается сюда, чтобы поисковики считали главным домен .рф.
+SITE = os.environ.get("SITE_URL", "https://xn--80aacfo5agnheo1a.xn--p1ai")
 PHONE = "+7 991 914-98-54"
 TEL = "+79919149854"
 DATE = "2026-10-08"          # дата публикации по умолчанию, можно задать в файле полем date:
