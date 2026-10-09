@@ -350,7 +350,7 @@
     for (var j = 0; j <= R; j++) for (var i = 0; i <= C; i++) {
       var k = j * W + i;
       var l = b[k - (i > 0 ? 1 : 0)], r = b[k + (i < C ? 1 : 0)], u = b[k - (j > 0 ? W : 0)], d = b[k + (j < R ? W : 0)];
-      var v = (2 * b[k] - a[k] + 0.24 * (l + r + u + d - 4 * b[k])) * 0.985;
+      var v = (2 * b[k] - a[k] + 0.12 * (l + r + u + d - 4 * b[k])) * 0.992;
       if (j === 0) v = 0;
       if (v > 9) v = 9; else if (v < -9) v = -9;
       c[k] = v;
@@ -364,13 +364,13 @@
 
   Cloth.prototype.frame = function (now) {
     var s = this.snap, W = s.w, H = s.h, C = this.C, R = this.R;
-    var T = 2.4, t = this.entry >= 0 ? (now - this.entry) / 1000 : T;
+    var T = 3.8, t = this.entry >= 0 ? (now - this.entry) / 1000 : T;
     if (t < 0) { this.draw(0); return true; }     /* ждёт своей очереди */
-    var fade = 1 - smooth(T - 0.7, T, t);
-    var phi = this.swing * Math.exp(-t / 0.55) * Math.cos(2 * Math.PI * t / 1.1) * fade;
-    var A = 28 * Math.exp(-t / 0.9) * fade;
+    var fade = 1 - smooth(T - 1.2, T, t);
+    var phi = this.swing * Math.exp(-t / 0.9) * Math.cos(2 * Math.PI * t / 1.9) * fade;
+    var A = 26 * Math.exp(-t / 1.4) * fade;
     var energy = 0;
-    for (var st = 0; st < 2; st++) energy = this.waves();
+    energy = this.waves();
     var bscale = 9;                                /* единица волны в пикселях */
 
     var f = Math.max(1500, H * 2.4), cx = PAD + W / 2, cy = PAD + H / 2;
@@ -381,10 +381,10 @@
       for (var i = 0; i <= C; i++) {
         var u = i / C, k = j * (C + 1) + i;
         var cu = (u * (W + PAD * 2) - PAD) / W, cv = dy / H;
-        var zw = A * g * (0.6 * Math.sin(2 * Math.PI * (1.1 * cu + 0.9 * cv) - 2.4 * t * 2.6) +
-                          0.4 * Math.sin(2 * Math.PI * (0.6 * cu - 1.4 * cv) - 1.9 * t * 2.6 + 1.3));
+        var zw = A * g * (0.6 * Math.sin(2 * Math.PI * (1.1 * cu + 0.9 * cv) - 2.4 * t * 1.2) +
+                          0.4 * Math.sin(2 * Math.PI * (0.6 * cu - 1.4 * cv) - 1.9 * t * 1.2 + 1.3));
         var z = dy * sinP + zw + h[k] * bscale * gb;
-        pos[k * 3] = u * (W + PAD * 2) + A * 0.3 * g * Math.sin(2 * Math.PI * 0.5 * cv - 4 * t);
+        pos[k * 3] = u * (W + PAD * 2) + A * 0.3 * g * Math.sin(2 * Math.PI * 0.5 * cv - 2 * t);
         pos[k * 3 + 1] = PAD + dy * cosP;
         pos[k * 3 + 2] = z;
       }
@@ -412,7 +412,7 @@
       vd[o + 4] = lit * 0.75;
       vd[o + 5] = sp;
     }
-    this.draw(this.entry >= 0 ? Math.min(1, t / 0.16) : 1);
+    this.draw(this.entry >= 0 ? Math.min(1, t / 0.3) : 1);
 
     var entryDone = t >= T;
     if (entryDone) this.entry = -1;

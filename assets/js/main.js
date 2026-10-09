@@ -112,16 +112,22 @@
     var ax = lerp(CAM.x0, CAM.x1, e) + tx;
     var ay = lerp(CAM.y0, CAM.y1, e) + ty;
     var ayPhoto = ay + ent * vh * 0.13;
-    var band = { faceOut: [0.46, 0.55], fullIn: [0.155, 0.19] };   /* доли от hw0 */
+    var band = { faceOut: [0.49, 0.535] };   /* доли от hw0 */
     var k = hw / CAM.hw0;
+    /* кадры «лицо» и «по пояс» обрезаны снизу: следующий кадр проявляется, пока нижний край ещё за экраном */
+    function bottomOf(L) { var ih = hw / L.hw * L.ratio; return ayPhoto - L.hy * ih + ih; }
+    var torsoIn = Math.max(1 - range(k, band.faceOut[0], band.faceOut[1]), 1 - range(bottomOf(LAYERS[0]), vh * 1.05, vh * 1.3));
+    var fullIn = 1 - range(bottomOf(LAYERS[1]), vh * 1.05, vh * 1.3);
 
     LAYERS.forEach(function (L) {
       if (!L.el) return;
       var iw = hw / L.hw, ih = iw * L.ratio;
       var o;
-      if (L.key === "face")  o = range(k, band.faceOut[0], band.faceOut[1]);
-      else if (L.key === "full") o = 1 - range(k, band.fullIn[0], band.fullIn[1]);
-      else o = (1 - range(k, band.faceOut[0], band.faceOut[1])) * range(k, band.fullIn[0], band.fullIn[1]);
+      /* следующий кадр проявляется поверх предыдущего, а предыдущий остаётся непрозрачным до конца перехода:
+         так сквозь фигуру не просвечивает фон и не появляется туманный прямоугольник */
+      if (L.key === "face")  o = torsoIn < 1 ? 1 : 0;
+      else if (L.key === "full") o = fullIn;
+      else o = torsoIn * (fullIn < 1 ? 1 : 0);
       o *= 1 - ent;
       L.el.style.opacity = o.toFixed(3);
       if (o < 0.002) { L.el.style.visibility = "hidden"; return; }
