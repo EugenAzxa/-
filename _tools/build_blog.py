@@ -149,6 +149,7 @@ def head(title, desc, url, og_type="website", extra=""):
 <meta property="og:url" content="%(u)s">
 <meta property="og:image" content="%(site)s/assets/img/og.jpg">
 <meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="работаневолк.рф">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt">
 <link rel="preconnect" href="https://fonts.googleapis.com">
